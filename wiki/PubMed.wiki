@@ -1,0 +1,4 @@
+#summary Description of PubMed
+
+PubMed is a service of the U.S. National Library of Medicine that includes over 16 million citations from MEDLINE and other life science journals for biomedical articles back to the 1950s. PubMed includes links to full text articles and other related resources.
+
