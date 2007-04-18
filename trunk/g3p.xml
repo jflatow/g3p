@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<Module>
+ <ModulePrefs title="Google Gadget Gateway to Pubmed" height="375" author="Jared Flatow" author_email="jflatow@gmail.com" author_affiliation="Robert H. Lurie Comprehensive Cancer Center of Northwestern University" screenshot="" thumbnail="" description="g3p">
+   <Require feature="setprefs" />
+ </ModulePrefs>
+ <UserPref name="example" default_value="" datatype="hidden"/>
+ <Content type="html">
+ <![CDATA[
+ <iframe src="http://www.flatown.com/g3p/g3p.html" style="border:0;scrolling:0;width:100%;height:100%"></iframe>
+]]>
+ </Content> 
+</Module>
