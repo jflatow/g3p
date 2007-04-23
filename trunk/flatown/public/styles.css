@@ -1,0 +1,52 @@
+.container {
+	width: 100%;
+	height: 100%;
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 10px;
+}
+
+.invisible_iframe {
+	border: 0px;
+	width: 0px;
+	height: 0px;
+}
+
+/* the tab bar itself */
+.gwt-TabBar {
+	font-size: 12px;
+}
+
+/* the left edge of the bar */
+.gwt-TabBar .gwt-TabBarFirst {
+	border-bottom: 1px solid #7AA5D6;
+	width: 15px;
+}
+
+/* the right edge of the bar */
+.gwt-TabBar .gwt-TabBarRest {
+	border-bottom: 1px solid #7AA5D6;
+}
+
+/* unselected tabs */ 
+.gwt-TabBar .gwt-TabBarItem {
+	border: 1px solid #7AA5D6;
+	background-color: #E5ECF9;
+	padding: 2px 5px 2px 5px;
+}
+
+/* additional style for selected tabs */
+.gwt-TabBar .gwt-TabBarItem-selected {
+	border-bottom: 1px solid white;
+	background-color: white;
+	color: #3366CE;
+}
+
+/* the tab panel itself */
+.gwt-TabPanel {
+	width: 100%;
+}
+
+/* the bottom section of the tab panel (the deck containing the widget) */ 
+.gwt-TabPanelBottom {
+
+}
