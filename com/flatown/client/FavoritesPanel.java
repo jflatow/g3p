@@ -16,6 +16,7 @@
 
 package com.flatown.client;
 
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class FavoritesPanel extends VerticalPanel {
@@ -24,5 +25,25 @@ public class FavoritesPanel extends VerticalPanel {
   
   private FavoritesPanel() {
     
+  }
+  
+  /** Adds a SearchBox to the FavoritesPanel, but only if it doesn't already exist (and is non-empty) */
+  public void addSearchBox(SearchBox searchBox) {
+    if (!searchBox.getSearchQuery().equals("") 
+          && !containsSearch(searchBox.getSearchQuery(), searchBox.getDatabase()))
+      super.add(searchBox);
+  }
+  
+  /** Checks to see if the FavoritesPanel contains a given search request */
+  private boolean containsSearch(String searchQuery, String database) {
+    for (int i = 0; i < this.getWidgetCount(); i++) {
+      Widget current = this.getWidget(i);
+      if (current instanceof SearchBox) {
+        if (((SearchBox)current).getSearchQuery().equals(searchQuery)
+              && ((SearchBox)current).getDatabase().equals(database))
+          return true;
+      }
+    }
+    return false;
   }
 }
