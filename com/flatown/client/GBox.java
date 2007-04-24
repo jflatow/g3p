@@ -57,7 +57,7 @@ public class GBox extends TabPanel {
     
     // configure the elements
     DOM.setAttribute(div, "class", "gbox-Spacer");
-    DOM.setStyleAttribute(div, "whiteSpace", "no-wrap");
+    DOM.setStyleAttribute(div, "whiteSpace", "nowrap");
     DOM.setStyleAttribute(div, "width", width + "px");
     DOM.setStyleAttribute(div, "borderBottom", "1px solid #7AA5D6");
   
@@ -67,5 +67,7 @@ public class GBox extends TabPanel {
     // add them to the TabBar 
     DOM.appendChild(td, div);
     DOM.insertChild(tr, td, position);
+    
+    System.out.println("\n" + this + "\n");
   }
 }

@@ -58,6 +58,30 @@
 /************************** Styles for the different panels *********************/
 
 .searchbox {
-	padding: 3px 0px 5px 15px;
+	padding: 5px 0px 5px 0px;
 	background-color: #E5ECF9;
+	width: 100%;
+}
+
+.searchbox .searchbox-LayoutPanel {
+	width: 100%;
+}
+
+.searchbox .searchbox-Layer {
+	width: 100%;
+	height: auto;
+}
+
+.searchbox .gwt-Label {
+	float: left;
+	line-height: 2em;
+	width: auto;
+	margin: 0px 5px 0px 5px;
+}
+
+.searchbox .gwt-Hyperlink {
+	float: right;
+	line-height: 2em;
+	width: auto;
+	margin: 0px 5px 0px 5px;
 }
