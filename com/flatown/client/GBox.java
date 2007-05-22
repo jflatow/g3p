@@ -67,7 +67,5 @@ public class GBox extends TabPanel {
     // add them to the TabBar 
     DOM.appendChild(td, div);
     DOM.insertChild(tr, td, position);
-    
-    System.out.println("\n" + this + "\n");
   }
 }
