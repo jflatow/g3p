@@ -29,8 +29,8 @@ public class FavoritesPanel extends VerticalPanel {
   
   /** Adds a SearchBox to the FavoritesPanel, but only if it doesn't already exist (and is non-empty) */
   public void addSearchBox(SearchBox searchBox) {
-    if (!searchBox.getSearchQuery().equals("") 
-          && !containsSearch(searchBox.getSearchQuery(), searchBox.getDatabase()))
+    if (!searchBox.getLayout().getSearchQuery().equals("") 
+          && !containsSearch(searchBox.getLayout().getSearchQuery(), searchBox.getLayout().getDatabase()))
       super.add(searchBox);
   }
   
@@ -39,8 +39,8 @@ public class FavoritesPanel extends VerticalPanel {
     for (int i = 0; i < this.getWidgetCount(); i++) {
       Widget current = this.getWidget(i);
       if (current instanceof SearchBox) {
-        if (((SearchBox)current).getSearchQuery().equals(searchQuery)
-              && ((SearchBox)current).getDatabase().equals(database))
+        if (((SearchBox)current).getLayout().getSearchQuery().equals(searchQuery)
+              && ((SearchBox)current).getLayout().getDatabase().equals(database))
           return true;
       }
     }
