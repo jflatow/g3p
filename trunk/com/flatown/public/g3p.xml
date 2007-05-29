@@ -6,13 +6,29 @@
  <UserPref name="example" default_value="test" datatype="hidden"/>
  <Content type="html">
  <![CDATA[
- <script language="javascript">
- 	function onAppLaunch() {
-	 	<!-- latch onto the frame -->
-		var prefs = new _IG_Prefs();
+  <!--
+  // Back to old method for inlining a frame with the html, now that we know how to proxy with gmodules...this could be fragile
+  -->
+  <iframe name="appFrame" id="appFrame" style="border:0;width:100%;height:100%" scrolling="no"></iframe>
+  <script language="javascript">
+  	var gmod_domain = document.domain;
+  	var proxy = "http://" + gmod_domain + "/ig/proxy?url=";
+  	var host = "http://www.flatown.com/g3p";
+	
+	var appFrame = document.getElementById('appFrame'); 
+	var selectorUrl = proxy + host + "/g3p_gadget.html?nocache=" + Math.round(Math.random()*1e6);
+	
+	if (appFrame.contentWindow) {
+		// Older Mozilla has a caching bug for the iframe and won't reload the nocache.
+		appFrame.contentWindow.location.replace(selectorUrl);
+	} else {
+		// Older Safari doesn't have a contentWindow.
+		appFrame.src = selectorUrl;
 	}
- </script>
- <iframe name="appFrame" id="appFrame" onload="onAppLaunch()" src="http://www.flatown.com/g3p/g3p.html" style="border:0;width:100%;height:100%" scrolling="no"></iframe>
+	
+	var prefs = new _IG_Prefs();
+	alert(prefs.getString("example"));
+  </script>
 ]]>
  </Content> 
 </Module>

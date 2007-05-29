@@ -1,0 +1,163 @@
+#! /usr/bin/perl -w
+
+# Perl script to patch up the GWT compiled files for use in a Google gadget.
+#
+# Keep this file in the scripts directory of the GWT project, at the same level 
+# as the client and public directories. The relative path containing all these
+# directories is assumed to be src/com/domain_name
+#
+# If you change the default location of the  GWT compiler output, 
+# you will also need to change the gwt_output_path to match.
+#
+# Note: This script is only intended for use with the GWT v.1.3.3 and has only been
+# on the gwt-mac-1.3.3
+#
+# Usage: patch_gwt 
+
+use strict;
+use Cwd;
+
+# Reconstruct the absolute path so we can figure out the complete module name. 
+# This script assumes the app's name is g3p. We do this, however, in case 
+# the domain name changes.
+my $full_path = cwd . "/" . $0;
+my @dirs = split "/", $full_path;
+my $module_name = 'com.' .  $dirs[-3] . '.g3p';
+
+# This variable tells the script where to look for the compiled files. If you use
+# the default GWT directory structure, you may leave this as it is.
+my $gwt_output_path = join("/", @dirs[0..scalar(@dirs)-6]) . "/www";
+my $module_output_path = $gwt_output_path . '/' . $module_name;
+
+# Use the presence of this comment to determine whether or not we need to patch.
+my $patch_comment = "<!-- patched for g3p gadget -->\n";
+
+# First patch the module_name.nocache.html file. This needs to be done every time GWT
+# compiles the module.
+patch_nocache_html();
+
+# Next patch the gwt.js file, this only needs to be done once, so if the 
+# gwt_for_gadgets.js file already exists, we don't bother doing it again.
+patch_gwt_js();
+
+# Finally, change the GWT module so that it attaches the scripts properly. This also
+# needs to be done on every compilation.
+patch_g3p_html();
+
+sub patch_nocache_html {
+    my $module_nocache_path = $module_output_path . "/" . $module_name . '.nocache.html';
+
+    open(NOCACHEHTML, $module_nocache_path) 
+	or die("Could not open nocache file: $!\n");
+    open(PATCHEDNOCACHEHTML, '>'.$module_nocache_path . '.patched')
+	or die("Could not open nocache patch file for writing: $!\n");
+
+    # A flag to keep track and make sure we are editing the right part of the file
+    my $insertionFlag = 0;
+
+    while (<NOCACHEHTML>) {
+	$insertionFlag = 0 if (/$patch_comment/);
+	if ($insertionFlag == 2) {
+	    # get the base of the path so we can bypass domain security issues
+	    print PATCHEDNOCACHEHTML $patch_comment;
+	    print PATCHEDNOCACHEHTML q{
+		var mcb = $wnd.__gwt_tryGetModuleControlBlock(location.search);
+		var base = mcb.getBaseURL();
+	    };
+	    $insertionFlag = 3;
+	}
+	
+	if ($insertionFlag == 3) {
+	    # make sure the query starts at the right spot
+	    s/(query\.substring\()0/$1query\.lastIndexOf\('\?'\)/;
+	    # put the full URL back together
+	    $insertionFlag = 0 if (s/(newUrl\s*\=)/$1 base \+/);
+	}
+	$insertionFlag = 2 if ($insertionFlag == 1 && /try/);
+	$insertionFlag = 1 if (/function selectScript/);
+	
+	print PATCHEDNOCACHEHTML;
+    }
+    
+    close(NOCACHEHTML);
+    close(PATCHEDNOCACHEHTML);
+    
+    rename($module_nocache_path.'.patched', $module_nocache_path)
+	or die("Couldn't move patched nocache file: $!");
+}
+
+sub patch_gwt_js {    
+    my $gwt_js_path = $module_output_path . '/gwt.js';
+    my $gwt_gadget_js_path = $module_output_path . '/gwt_for_gadgets.js';
+    return if (-e $gwt_gadget_js_path);
+
+    open(GWT_JS, $gwt_js_path) or die("Could not open $gwt_js_path: $!\n");
+    open(GWT_GADGET_JS, '>'.$gwt_gadget_js_path) or die("Could not create $gwt_gadget_js_path: $!\n");
+
+    my $insertionFlag = 0;
+
+    while (<GWT_JS>) {
+	# When something requests the baseUrl_ of the module it should get the whole thing
+	s/return this\.baseUrl_/return proxy \+ host \+ '\/' \+ this\.baseUrl_/ if ($insertionFlag == 0);
+	
+	if ($insertionFlag == 1) {
+	    # The search pattern changed since we are using a proxy it is now: ?url=<url>?[h&]<index>[&<unique>]
+	    $insertionFlag = 2 if (s/(var queryString\s*\=\s*queryString\.substring\(1)/$1 \+ queryString\.lastIndexOf\('\?'\)/);
+	}
+
+	$insertionFlag = 1 if (/function __gwt_tryGetModuleControlBlock\(queryString\)/);
+	print GWT_GADGET_JS;
+    }
+
+    close(GWT_JS);
+    close(GWT_GADGET_JS);
+}
+
+sub patch_g3p_html {
+    my $g3p_html_path = $module_output_path . '/g3p.html';
+    my $g3p_gadget_html_path = $module_output_path . '/g3p_gadget.html';
+
+    open(G3P_HTML, $g3p_html_path) or die("Could not open $g3p_html_path: $!\n");
+    open(G3P_GADGET_HTML, '>'.$g3p_gadget_html_path) or die("Could not open $g3p_gadget_html_path: $!\n");
+
+    # The history frame, which we are just getting rid of for now
+    my $history_frame = q{<iframe id="__gwt_historyFrame" class="invisible_iframe"></iframe>};
+
+    # The original script tag
+    my $old_script_tag = q{<script language="javascript" src="gwt.js"></script>};
+
+    # The replacement script tag
+    my $new_script_tag = <<'EOS';
+    <!-- Use the gmodules proxy to get the script on the same domain (only because we are running as a gadget) -->
+    <script language="javascript">
+    var proxy, host;
+    
+    function attachGWTScript() {
+	proxy = parent.proxy;
+	host = parent.host;
+	
+	var head = document.getElementsByTagName('head')[0];
+	var script = document.createElement('script');
+	script.type = 'text/javascript';
+	script.src = proxy + host + "/gwt_for_gadgets.js?nocache=" + Math.round(Math.random()*1e6);
+	head.appendChild(script);
+	
+	// make sure the host page is considered loaded
+	if (window.onload) { 
+	    window.onload();
+	}
+    }
+    
+    attachGWTScript();
+    </script>
+EOS
+    
+    while (<G3P_HTML>) {
+	s/$history_frame//;
+	s/$old_script_tag/$new_script_tag/;
+	print G3P_GADGET_HTML;
+    }
+
+    close(G3P_HTML);
+    close(G3P_GADGET_HTML);
+}
