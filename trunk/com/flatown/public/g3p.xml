@@ -27,7 +27,6 @@
 	}
 	
 	var prefs = new _IG_Prefs();
-	alert(prefs.getString("example"));
   </script>
 ]]>
  </Content> 
