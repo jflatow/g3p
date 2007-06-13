@@ -14,19 +14,12 @@
  * the License.
  */
 
-package com.flatown.client;
+package com.flatown.client.eutils.params;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
+import com.flatown.client.eutils.EntrezEngine;
 
-import com.google.gwt.user.client.ui.ScrollPanel;
-
-public class SearchPanel extends ScrollPanel {
-  
-  public static final SearchPanel Singleton = new SearchPanel();
-  
-  private SearchPanel() {
-    super(new SearchBox());
-    DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 40 + "px");
+public class TermParam extends Parameter {
+  public TermParam(String value) {
+    _value = EntrezEngine.replaceSpaces(value);
   }
 }

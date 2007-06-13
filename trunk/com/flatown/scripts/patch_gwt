@@ -104,7 +104,7 @@ sub patch_nocache_html {
 sub patch_gwt_js {    
     my $gwt_js_path = $module_output_path . '/gwt.js';
     my $gwt_gadget_js_path = $module_output_path . '/gwt_for_gadgets.js';
-    return if (-e $gwt_gadget_js_path);
+#    return if (-e $gwt_gadget_js_path);
 
     open(GWT_JS, $gwt_js_path) or die("Could not open $gwt_js_path: $!\n");
     open(GWT_GADGET_JS, '>'.$gwt_gadget_js_path) or die("Could not create $gwt_gadget_js_path: $!\n");
@@ -112,6 +112,10 @@ sub patch_gwt_js {
     my $insertionFlag = 0;
 
     while (<GWT_JS>) {
+	# Turn off caching of the nocachehtml for development
+	my $js_rand = q{Math.round(Math.random()*1e6)};
+	s/("\.nocache\.html")/$1 \+ '\?nocache=\' \+ $js_rand/;
+
 	# When something requests the baseUrl_ of the module it should get the whole thing
 	s/return this\.baseUrl_/return proxy \+ host \+ '\/' \+ this\.baseUrl_/ if ($insertionFlag == 0);
 	
@@ -145,24 +149,32 @@ sub patch_g3p_html {
     my $new_script_tag = <<'EOS';
     <!-- Use the gmodules proxy to get the script on the same domain (only because we are running as a gadget) -->
     <script language="javascript">
-    var proxy, host;
-    
-    function attachGWTScript() {
-	proxy = parent.proxy;
-	host = parent.host;
-	
+    var proxy = parent.proxy;
+    var host = parent.host;
+
+    function attachGWTScript() {	
 	var head = document.getElementsByTagName('head')[0];
 	var script = document.createElement('script');
 	script.type = 'text/javascript';
 	script.src = proxy + host + "/gwt_for_gadgets.js?nocache=" + Math.round(Math.random()*1e6);
 	head.appendChild(script);
 	
-	// make sure the host page is considered loaded
-	if (window.onload) { 
-	    window.onload();
-	}
+	confirmLoad();
+
     }
-    
+ 
+    // make sure the window.onload event is triggered after the script gets loaded
+    function confirmLoad() {
+	if (!window.__gwt_bootstrap) {
+	    window.setTimeout(confirmLoad, 10);
+	    return;
+	}
+
+	if (window.onload) {
+            window.onload();
+        }
+    }
+   
     attachGWTScript();
     </script>
 EOS

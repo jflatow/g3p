@@ -13,6 +13,12 @@
 	height: 0px;
 }
 
+form iframe {
+	border: 0px;
+	width: 0px;
+	height: 0px;
+}
+
 /************************** Styles for the tabbing menu ***********************/
 
 /* the tab bar itself */
@@ -52,36 +58,75 @@
 
 /* the bottom section of the tab panel (the deck containing the widget) */ 
 .gwt-TabPanelBottom {
-
+	border-top: 5px solid #E5ECF9;
 }
 
 /************************** Styles for a SearchBox *********************/
 
 .searchbox {
-	padding: 5px 0px 5px 0px;
-	background-color: #E5ECF9;
 	width: 100%;
+	background-color: #E5ECF9;
 }
 
 .searchbox .searchbox-LayoutPanel {
 	width: 100%;
+	float: left;
+	clear: right;
+	margin: 0px 0px 5px 0px;
+	background-color: #E5ECF9;
 }
 
 .searchbox .searchbox-Layer {
 	width: 100%;
-	height: auto;
+	float: left;
+	clear: right;
 }
 
 .searchbox .gwt-Label {
 	float: left;
 	line-height: 2em;
-	width: auto;
 	margin: 0px 5px 0px 5px;
 }
 
-.searchbox .gwt-Hyperlink {
-	float: right;
+.searchbox .searchbox-LayoutPanel .gwt-Hyperlink {
 	line-height: 2em;
-	width: auto;
+}
+
+/************************** Styles for a ResultshBox *********************/
+
+.resultsbox {
+	width: 100%;
+	background-color: white;
+	float: left;
+	clear: right;
+	margin: 5px 0px 0px 0px;
+}
+
+.aresult {
+	float: left;
+	clear: right;
+	margin: 2px 0px 2px 0px;
+}
+
+/************************** Styles for Miscellaneous *********************/
+.hoverLink {
+	float: right;
+	clear: none;
+	display: inline;
 	margin: 0px 5px 0px 5px;
+}
+
+.favorites {
+	width: 100%;
+	height: 100%;
+}
+
+.favoritesPanel {
+	width: 100%;
+	height: 100%;
+}
+
+.aResultFragment {
+	float: left;
+	clear: right;
 }

@@ -16,34 +16,71 @@
 
 package com.flatown.client;
 
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.Label;
 
-public class FavoritesPanel extends VerticalPanel {
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.json.client.JSONArray;
+
+public class FavoritesPanel extends ScrollPanel {
   
   public static final FavoritesPanel Singleton = new FavoritesPanel();
   
+  private VerticalPanel _favorites;
+  
   private FavoritesPanel() {
-    
+    _favorites = new VerticalPanel();
+    setWidget(_favorites);
+    _favorites.setStyleName("favorites");
+    setStyleName("favoritesPanel");
+    DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 40 + "px");
   }
   
   /** Adds a SearchBox to the FavoritesPanel, but only if it doesn't already exist (and is non-empty) */
   public void addSearchBox(SearchBox searchBox) {
-    if (!searchBox.getLayout().getSearchQuery().equals("") 
-          && !containsSearch(searchBox.getLayout().getSearchQuery(), searchBox.getLayout().getDatabase()))
-      super.add(searchBox);
+    if (!searchBox.getSearchQuery().equals("") 
+          && !containsSearch(searchBox.getSearchQuery(), searchBox.getDatabase())) {
+      _favorites.add(searchBox);
+      GBox.Prefs.saveFavorites();
+    }
+  }
+  
+  public boolean remove(Widget w) {
+    if (_favorites.remove(w)) {
+      GBox.Prefs.saveFavorites();
+      return true;
+    }
+    return false;
   }
   
   /** Checks to see if the FavoritesPanel contains a given search request */
   private boolean containsSearch(String searchQuery, String database) {
-    for (int i = 0; i < this.getWidgetCount(); i++) {
-      Widget current = this.getWidget(i);
+    for (int i = _favorites.getWidgetCount() - 1; i >= 0; i--) {
+      Widget current = _favorites.getWidget(i);
       if (current instanceof SearchBox) {
-        if (((SearchBox)current).getLayout().getSearchQuery().equals(searchQuery)
-              && ((SearchBox)current).getLayout().getDatabase().equals(database))
+        if (((SearchBox)current).getSearchQuery().equals(searchQuery)
+              && ((SearchBox)current).getDatabase().equals(database))
           return true;
       }
     }
     return false;
+  }
+  
+  /** Returns this FavoritesPanel as a JSONArray */
+  public JSONValue toJSON() {
+    JSONArray json = new JSONArray();
+    for (int i = _favorites.getWidgetCount() - 1; i >= 0; i--) {
+      Widget current = _favorites.getWidget(i);
+      if (current instanceof SearchBox) {
+        json.set(i, ((SearchBox)current).toJSON());
+      }
+    }
+    return json;
   }
 }

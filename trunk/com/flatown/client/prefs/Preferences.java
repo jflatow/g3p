@@ -14,19 +14,11 @@
  * the License.
  */
 
-package com.flatown.client;
+/** Interface required for the object responsible for storing preferences */
+package com.flatown.client.prefs;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
-
-import com.google.gwt.user.client.ui.ScrollPanel;
-
-public class SearchPanel extends ScrollPanel {
+public interface Preferences {
+  public boolean loadFavorites();
   
-  public static final SearchPanel Singleton = new SearchPanel();
-  
-  private SearchPanel() {
-    super(new SearchBox());
-    DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 40 + "px");
-  }
+  public void saveFavorites();
 }

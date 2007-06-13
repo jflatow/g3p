@@ -16,10 +16,14 @@
 
 package com.flatown.client;
 
+import com.flatown.client.prefs.*;
+
 import com.google.gwt.user.client.ui.TabPanel;
 import com.google.gwt.user.client.ui.Widget;
 
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
+import com.google.gwt.user.client.WindowResizeListener;
 import com.google.gwt.user.client.Element;
 
 /**
@@ -28,6 +32,7 @@ import com.google.gwt.user.client.Element;
 public class GBox extends TabPanel {
   
   public static final GBox Singleton = new GBox();
+  public static Preferences Prefs;
   
   private GBox() {
     this.add(FavoritesPanel.Singleton, "Favorites");
@@ -36,9 +41,18 @@ public class GBox extends TabPanel {
     
     insertSpacer(5, 2);
     insertSpacer(5, 4);
-    this.selectTab(1);
+    
+    Prefs = new GadgetPrefs();
+    this.selectTab(Prefs.loadFavorites() ? 0 : 1);
+    
+    Window.addWindowResizeListener(new WindowResizeListener() {
+      public void onWindowResized(int width, int height) {
+        DOM.setStyleAttribute(FavoritesPanel.Singleton.getElement(), "maxHeight", height - 40 + "px");
+        DOM.setStyleAttribute(SearchPanel.Singleton.getElement(), "maxHeight", height - 40 + "px");
+        DOM.setStyleAttribute(HelpPanel.Singleton.getElement(), "maxHeight", height - 40 + "px");
+      }
+    });
   }
-  
   
   /**
    * Unfortunately, because of the way the TabBar is set up, in order to have better control of the formatting

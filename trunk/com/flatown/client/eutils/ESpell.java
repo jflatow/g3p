@@ -14,19 +14,21 @@
  * the License.
  */
 
-package com.flatown.client;
+package com.flatown.client.eutils;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
+import com.flatown.client.AResult;
 
-import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.xml.client.Document;
 
-public class SearchPanel extends ScrollPanel {
+public class ESpell extends EntrezUtility {
   
-  public static final SearchPanel Singleton = new SearchPanel();
+  public ESpell(SinksEntrezUtil sink) {
+    super(sink);
+    _name = "espell.fcgi";
+    _doctype = "eSpellResult";
+  }
   
-  private SearchPanel() {
-    super(new SearchBox());
-    DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 40 + "px");
+  protected AResult[] formatResults(Document eResult) {
+    return null;
   }
 }

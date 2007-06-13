@@ -14,19 +14,12 @@
  * the License.
  */
 
-package com.flatown.client;
+package com.flatown.client.eutils.params;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
-
-import com.google.gwt.user.client.ui.ScrollPanel;
-
-public class SearchPanel extends ScrollPanel {
+public abstract class Parameter {
+  protected String _value;
   
-  public static final SearchPanel Singleton = new SearchPanel();
-  
-  private SearchPanel() {
-    super(new SearchBox());
-    DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 40 + "px");
+  public String toString() {
+    return _value;
   }
 }

@@ -16,13 +16,16 @@
 
 package com.flatown.client;
 
-import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 
-public class HelpPanel extends VerticalPanel {
+import com.google.gwt.user.client.ui.ScrollPanel;
+
+public class HelpPanel extends ScrollPanel {
   
   public static final HelpPanel Singleton = new HelpPanel();
   
   private HelpPanel() {
-    
+    DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 40 + "px");
   }
 }
