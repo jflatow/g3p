@@ -39,7 +39,7 @@ public class FavoritesPanel extends ScrollPanel {
     setWidget(_favorites);
     _favorites.setStyleName("favorites");
     setStyleName("favoritesPanel");
-    DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 40 + "px");
+    DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 50 + "px");
   }
   
   /** Adds a SearchBox to the FavoritesPanel, but only if it doesn't already exist (and is non-empty) */
