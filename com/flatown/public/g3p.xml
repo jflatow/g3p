@@ -1,16 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <Module>
- <ModulePrefs title="Google Gadget Gateway to Pubmed" height="375" author="Jared Flatow" author_email="jflatow@gmail.com" author_affiliation="Robert H. Lurie Comprehensive Cancer Center of Northwestern University" screenshot="" thumbnail="" description="g3p">
+ <ModulePrefs title="Google Gadget Gateway to Pubmed" height="375" scrolling="true" author="Jared Flatow" author_email="jflatow@gmail.com" author_affiliation="Robert H. Lurie Comprehensive Cancer Center of Northwestern University" screenshot="" thumbnail="" description="g3p">
    <Require feature="setprefs"/>
  </ModulePrefs>
- <UserPref name="example" default_value="test" datatype="hidden"/>
+ <UserPref name="favs" default_value="" datatype="hidden"/>
  <Content type="html">
  <![CDATA[
+ 	<style type="text/css">
+	<!--
+	div {height:100%;}
+	-->
+	</style>
   <!--
   // Back to old method for inlining a frame with the html, now that we know how to proxy with gmodules...this could be fragile
   -->
-  <iframe name="appFrame" id="appFrame" style="border:0;width:100%;height:100%" scrolling="no"></iframe>
+  <iframe name="appFrame" id="appFrame" style="border:0;width:100%;height:100%;" scrolling="no" frameborder="no"></iframe>
   <script language="javascript">
+  	var prefs = new _IG_Prefs();
+  
   	var gmod_domain = document.domain;
   	var proxy = "http://" + gmod_domain + "/ig/proxy?url=";
   	var host = "http://www.flatown.com/g3p";
@@ -25,8 +32,6 @@
 		// Older Safari doesn't have a contentWindow.
 		appFrame.src = selectorUrl;
 	}
-	
-	var prefs = new _IG_Prefs();
   </script>
 ]]>
  </Content> 

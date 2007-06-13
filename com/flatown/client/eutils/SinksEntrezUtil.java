@@ -14,19 +14,15 @@
  * the License.
  */
 
-package com.flatown.client;
+package com.flatown.client.eutils;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
+import com.flatown.client.AResult;
 
-import com.google.gwt.user.client.ui.ScrollPanel;
-
-public class SearchPanel extends ScrollPanel {
-  
-  public static final SearchPanel Singleton = new SearchPanel();
-  
-  private SearchPanel() {
-    super(new SearchBox());
-    DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 40 + "px");
-  }
+/** Interface for an object that can sink an EntrezUtility and that doesn't
+ * extend EntrezUtility (namely, ResultBox)
+ */
+public interface SinksEntrezUtil {
+  public void setResults(AResult[] results);
+  public void onEntrezError(EntrezException e);
+  public void logError(String logEntry);
 }

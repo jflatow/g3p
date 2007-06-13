@@ -16,25 +16,64 @@
 
 package com.flatown.client;
 
+import com.flatown.client.eutils.SinksEntrezUtil;
+import com.flatown.client.eutils.EntrezException;
+
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.FormPanel;
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.TextBox;
-import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
-import com.google.gwt.user.client.ui.ChangeListener;
+
 import com.google.gwt.user.client.DOM;
 
 /** ResultsBoxes contain results for an associated SearchBox
  * 
  */
-public class ResultsBox extends FlowPanel implements ChangeListener {
-   
-  /** Called whenever a 'change' occurs on this ResultsBox */
-  public void onChange(Widget sender) {
-    
+public class ResultsBox extends FlowPanel implements SinksEntrezUtil {
+  
+  private SearchBox _searchbox;
+  
+  private boolean _displayLog;
+  private AResult _log;
+  
+  public ResultsBox(SearchBox searchbox) {
+    _searchbox = searchbox;
+    _displayLog = true;
+    _log = new AResult();
+    this.setStyleName("resultsbox");
   }
-
+  
+  public SearchBox getSearchBox() {
+    return _searchbox;
+  }
+  
+  /** Allows the ResultsBox to implement SinkEntrezUtil */
+  public void setResults(AResult[] results) {
+    clearResults();
+    for (int i = 0; i < results.length; i++) {
+      add(results[i]);
+    }
+  }
+  
+  /** Allows the ResultsBox to implement SinkEntrezUtil */
+  public void onEntrezError(EntrezException e) {
+    // handle/display an entrez exception
+    if (_displayLog) {
+      clearResults();
+      AResult header = new AResult();
+      header.add(new Label(e.toString()));
+      add(header);
+      add(_log); 
+    }
+  }
+  
+  public void logError(String logEntry) {
+    // write the logEntry to the AResult log (provide mechanism for displaying log)
+    _log.add(new Label(logEntry));
+  }
+  
+  private void clearResults() {
+    for (int i = getWidgetCount(); i > 0; i--) {
+      remove(i-1);
+    }
+  }
 }

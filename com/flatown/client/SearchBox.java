@@ -16,6 +16,8 @@
 
 package com.flatown.client;
 
+import com.flatown.client.eutils.EntrezEngine;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FormPanel;
 import com.google.gwt.user.client.ui.FormHandler;
@@ -23,6 +25,11 @@ import com.google.gwt.user.client.ui.FormSubmitEvent;
 import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
 import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.DOM;
+
+import com.google.gwt.json.client.JSONValue;
+import com.google.gwt.json.client.JSONObject;
+import com.google.gwt.json.client.JSONString;
+import com.google.gwt.json.client.JSONNumber;
 
 public class SearchBox extends FormPanel implements ClickListener {
   
@@ -54,16 +61,26 @@ public class SearchBox extends FormPanel implements ClickListener {
     _layoutPanel.setNumResults(numResults);
   }
   
+  /** 
+   * Convenience constructor for a SearchBox from a JSONObject. 
+   */
+  public SearchBox(JSONObject searchbox) {
+    this();
+    _layoutPanel.setSearchQuery(searchbox.get("query").isString().stringValue());
+    _layoutPanel.setDatabase(searchbox.get("dbName").isString().stringValue());
+    _layoutPanel.setNumResults((int)(searchbox.get("numResults").isNumber().getValue()));
+  }
+  
   /** Called whenever a button is clicked on this SearchBox */
   public void onClick(Widget sender) {
-    if (sender == _layoutPanel.getFavLink()) {
+    if (sender == _layoutPanel.getFavLink().getLink()) {
       if (_layoutPanel.isEditable())
         FavoritesPanel.Singleton.addSearchBox(this.makeFavorite());
       else
         FavoritesPanel.Singleton.remove(this);
     } 
     
-    else if (sender == _layoutPanel.getSearchLink()) {
+    else if (sender == _layoutPanel.getSearchLink().getLink()) {
       this.submit();
     }
   }
@@ -72,30 +89,62 @@ public class SearchBox extends FormPanel implements ClickListener {
    * Returns a SearchBox identical to this one, only uneditable
    */
   private SearchBox makeFavorite() {
-    SearchBox box = new SearchBox(_layoutPanel.getSearchQuery(), _layoutPanel.getDatabase(), _layoutPanel.getNumResults());
+    SearchBox box = new SearchBox(getSearchQuery(), getDatabase(), getNumResults());
     box.getLayout().makeFavorite();
     return box;
   }
 
+  /** Convenience methods to get the SearchBox parameters */
+  public String getSearchQuery() {
+    return _layoutPanel.getSearchQuery();
+  }
+  
+  public String getDatabase() {
+    return _layoutPanel.getDatabase();
+  }
+  
+  public int getNumResults() {
+    return _layoutPanel.getNumResults();
+  }
+  
   /** Gets the SearchLayout associated with this SearchBox */
   public SearchLayout getLayout() {
     return _layoutPanel;
   }
   
-  /** Specialized FormHandler for this Form */
+  /** Convenience method to get the ResultsBox for this SearchBox */
+  public ResultsBox getResultsBox() {
+    return _layoutPanel.getResultsBox();
+  }
+  
+  /** Returns this SearchBox as a JSONValue */
+  public JSONValue toJSON() {
+    JSONObject json = new JSONObject();
+    json.put("query", new JSONString(getSearchQuery()));
+    json.put("dbName", new JSONString(getDatabase()));
+    json.put("numResults", new JSONNumber(getNumResults()));
+    return json;
+  }
+  
+  /** Specialized FormHandler for this Form. 
+   * Since GWT doesn't actually use forms but iframes, we are still subject to the same-origin
+   * security policy. Therefore, we won't ever actually submit the form but instead pass the submission
+   * off to the Google Gadget API fetch utilities.
+   */
   class SearchFormHandler implements FormHandler {
     
     /** Function called whenever the form is submitted */
     public void onSubmit(FormSubmitEvent event) {
       /* Perform form validation here */
-      if (_layoutPanel.getSearchQuery().equals("")) event.setCancelled(true);
+      if (getSearchQuery().equals("")) return;
       /* Configure the action to take */
-      setAction("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi");
+      // setAction("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi");
+      EntrezEngine.Singleton.search(SearchBox.this);
+      /* Always cancel the submission, since we aren't actually using the form to submit */
+      event.setCancelled(true);
     }
     
-    /** Function called whenever the form actions returns */
-    public void onSubmitComplete(FormSubmitCompleteEvent event) {
-      System.out.println(event.getResults()+ "\n");
-    }
+    /** Function called whenever the submit returns (which doesn't really happen) */
+    public void onSubmitComplete(FormSubmitCompleteEvent event) {}
   }
 }

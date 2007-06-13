@@ -14,19 +14,17 @@
  * the License.
  */
 
-package com.flatown.client;
+package com.flatown.client.eutils.params;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
-
-import com.google.gwt.user.client.ui.ScrollPanel;
-
-public class SearchPanel extends ScrollPanel {
+/** Holds the parameters for an EntrezUtility */
+public class EnvAndURLParams extends URLParams {
   
-  public static final SearchPanel Singleton = new SearchPanel();
+  public void setEnv(String webenv, int querykey) {
+    this.setParam("WebEnv", new WebEnvParam(webenv));
+    this.setParam("query_key", new IntParam(querykey));
+  }
   
-  private SearchPanel() {
-    super(new SearchBox());
-    DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 40 + "px");
+  public void setEnv(String[] idlist) {
+    this.setParam("id", new IdListParam(idlist));
   }
 }

@@ -20,8 +20,6 @@ import com.google.gwt.user.client.ui.ListBox;
 
 public class Utilities {
   
-  private Utilities() {}
-  
   /** Selects an item in a ListBox with text the same as the given string, if it exists
    */
   public static void selectListItem(ListBox list, String text) {

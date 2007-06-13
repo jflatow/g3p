@@ -16,14 +16,13 @@
 
 package com.flatown.client;
 
-import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.ListBox;
-import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.DOM;
 
-public class SearchLayout extends VerticalPanel {
+public class SearchLayout extends FlowPanel {
   
   /** The SearchBox holding this SearchLayout */
   private SearchBox _searchbox;
@@ -31,10 +30,10 @@ public class SearchLayout extends VerticalPanel {
   /** Form fields */
   private ChameleonBox _chamBox;
   private ListBox _numResults;
-  private Hyperlink _searchLink, _favLink;
+  private HoverLink _searchLink, _favLink;
   
-  /** The associated ResultsBox, created when the form is submitted */
-  private ResultsBox _resultsBox;
+  /** The associated ResultsBox */
+  private ResultsBox _resultsbox;
   
   
    /** Constructs the layout panel that contains the top and bottom Panels
@@ -42,9 +41,11 @@ public class SearchLayout extends VerticalPanel {
    */
   public SearchLayout(SearchBox searchbox) {
     _searchbox = searchbox;
-
+    _resultsbox = new ResultsBox(_searchbox);
+    
     this.add(createTopPanel());
     this.add(createBottomPanel());
+    this.add(_resultsbox);
     this.setStyleName("searchbox-LayoutPanel");
   }
   
@@ -54,7 +55,7 @@ public class SearchLayout extends VerticalPanel {
   private FlowPanel createTopPanel() {
     /* Instantiate all the items that we will actually save handles to */
     _chamBox = new ChameleonBox();
-    createSearchLink();
+    _searchLink = new HoverLink("Search", "searchToken", _searchbox);
     
     /* Put the panel together and return it */
     FlowPanel topPanel = new FlowPanel();
@@ -63,14 +64,14 @@ public class SearchLayout extends VerticalPanel {
     topPanel.setStyleName("searchbox-Layer");
     return topPanel;
   }
-        
+  
   /** Creates the bottom layer panel of the SearchBox
    * 
    */
   private FlowPanel createBottomPanel() {
     /* Instantiate all the items that we will actually save handles to */
     createNResultsMenu();
-    createFavLink();
+    _favLink = new HoverLink("Add to Favorites", "favToken", _searchbox);
     
     /* Wrap everything inside DIVs appropriately */
     Label show = new Label("Show");
@@ -92,12 +93,6 @@ public class SearchLayout extends VerticalPanel {
     return bottomPanel;
   }
   
-  /** Instantiates a link to fire searches */
-  private void createSearchLink() {
-    _searchLink = new Hyperlink("Search", "searchToken");
-    _searchLink.addClickListener(_searchbox);
-  }
-  
   /** Instantiates the list for the number of results */
   private void createNResultsMenu() {
     _numResults = new ListBox();
@@ -105,12 +100,6 @@ public class SearchLayout extends VerticalPanel {
     for (int i = 1; i <= 10; i++) {
       _numResults.addItem("" + i);
     }
-  }
-
-  /** Instantiates a link that adds this SearchBox to the FavoritesPanel */
-  private void createFavLink() {
-    _favLink = new Hyperlink("Add to Favorites", "favToken");
-    _favLink.addClickListener(_searchbox);
   }
   
   /* Field Accessor Methods */
@@ -161,13 +150,18 @@ public class SearchLayout extends VerticalPanel {
     _favLink.setText("Remove");
   }
   
-  /** Returns the favorites link to this layout panel */
-  public Hyperlink getFavLink() {
+  /** Returns the favorites link for this layout panel */
+  public HoverLink getFavLink() {
     return _favLink;
   }
   
-  /** Returns the favorites link to this layout panel */
-  public Hyperlink getSearchLink() {
+  /** Returns the search link for this layout panel */
+  public HoverLink getSearchLink() {
     return _searchLink;
+  }
+  
+  /** Returns the ResultsBox located on this layout panel */
+  public ResultsBox getResultsBox() {
+    return _resultsbox;
   }
 }

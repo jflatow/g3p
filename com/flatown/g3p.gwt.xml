@@ -3,6 +3,12 @@
 	<!-- Inherit the core Web Toolkit stuff.                  -->
 	<inherits name='com.google.gwt.user.User'/>
 
+	<!-- Inherit the JSON conversion stuff.                   -->
+	<inherits name='com.google.gwt.json.JSON'/> 
+
+	<!-- Inherit the XML DOM Parsing stuff.                   -->
+	<inherits name='com.google.gwt.xml.XML'/> 
+
 	<!-- Specify the app entry point class.                   -->
 	<entry-point class='com.flatown.client.g3p'/>
 

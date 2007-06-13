@@ -16,37 +16,19 @@
 
 package com.flatown.client;
 
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.Label;
 
-/** Class for an object containing a single search result
- * 
- */
-public class AResult extends FocusPanel {
- 
-  private FlowPanel _displayPanel;
-  
-  public AResult() {
-    // an empty result has an empty flowpanel widget
-    _displayPanel = new FlowPanel();
-    setWidget(_displayPanel);
-    setStyleName("aresult");
+public abstract class AResultFragment extends FlowPanel {
+
+  public AResultFragment() {
+    setStyleName("aResultFragment");
   }
   
-  public void add(Widget w) {
-    _displayPanel.add(w);
-  }
-  
-  /** Convenience method for adding Labels as new layers to the AResult */
+  /** Convenience method for adding Labels as new layers to the AResultFragment */
   public void addLabel(String s) {
     Label label = new Label(s);
     label.setStyleName("aResultFragment");
     add(label);
-  }
-  
-  public void attachToResultsBox(ResultsBox container) {
-    // add the mouseListener to swap positions in the container on drag
   }
 }
