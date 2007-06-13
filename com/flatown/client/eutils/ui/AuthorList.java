@@ -33,9 +33,10 @@ public class AuthorList extends AResultFragment {
       _authors = new String[authorNodes.getLength()];
       for (int j = 0; j < authorNodes.getLength(); j++) {
         Node authorHandler = authorNodes.item(j);
-        _authors[j] = 
-          EntrezUtility.getNodeText(EntrezUtility.getFirstNodeOfTag(authorHandler, "LastName")) + " " +
-          EntrezUtility.getNodeText(EntrezUtility.getFirstNodeOfTag(authorHandler, "Initials"));
+        Node lastName = EntrezUtility.getFirstNodeOfTag(authorHandler, "LastName");
+        Node initials = EntrezUtility.getFirstNodeOfTag(authorHandler, "Initials");
+        _authors[j] = (lastName != null ? EntrezUtility.getNodeText(lastName) : "") + " " 
+          + (initials != null ? EntrezUtility.getNodeText(initials) : "");
       }
       addLabel("Authors: " + authorString()); 
     } 
