@@ -14,19 +14,9 @@
  * the License.
  */
 
-package com.flatown.client;
+/** Interface for any object serving as the Requestor for our content */
+package com.flatown.client.xml;
 
-import com.google.gwt.user.client.DOM;
-import com.google.gwt.user.client.Window;
-
-import com.google.gwt.user.client.ui.FocusPanel;
-
-public class SearchPanel extends FocusPanel {
-  
-  public static final SearchPanel Singleton = new SearchPanel();
-  
-  private SearchPanel() {
-    super(new SearchBox());
-    DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 40 + "px");
-  }
+public interface XmlParser {
+  public void parse(String xml);
 }

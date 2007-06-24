@@ -18,6 +18,7 @@ package com.flatown.client.eutils;
 
 import com.flatown.client.eutils.params.*;
 import com.flatown.client.SearchBox;
+import com.flatown.client.BookmarksPanel;
 import com.flatown.client.xml.*;
 
 /** The EntrezEngine are used by the SearchBox to search the databases.
@@ -27,16 +28,17 @@ import com.flatown.client.xml.*;
 public class EntrezEngine {
   
   public static final EntrezEngine Singleton = new EntrezEngine();
-
-  private static final String BaseURL = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
+  public static final String PubmedURL = "http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=Retrieve&db=PubMed&dopt=Citation&list_uids=";
   
+  private static final String BaseURL = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
+ 
   private static XmlRequestor _requestor;
   
   private EntrezEngine() { 
     _requestor = new IGXmlRequestor();
   }
   
-  public void search(SearchBox searchbox) {
+  public static void search(SearchBox searchbox) {
     // create the pipeline
     EntrezUtility fetch = new EFetch(searchbox.getResultsBox());
     EnvAndURLParams fetchParams = new EnvAndURLParams();
@@ -51,6 +53,15 @@ public class EntrezEngine {
     // set RetMax, RetStart, etc.
     // call run with the pipeline and the searchbox's resultsbox as the final sink
     search.run(searchParams);
+  }
+  
+  public static void fetchBookmarks(String[] pmids) {
+    // fetch the articles with the given pmids
+    // place the results in the BookmarksPanel
+    EntrezUtility fetch = new EFetch(BookmarksPanel.Singleton.getSink());
+    EnvAndURLParams fetchParams = new EnvAndURLParams();
+    fetchParams.setEnv(pmids);
+    fetch.run(fetchParams);
   }
   
   /** Give the utilities access to the fetchXml functions */

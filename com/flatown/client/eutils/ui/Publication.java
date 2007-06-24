@@ -24,24 +24,61 @@ import com.google.gwt.xml.client.Node;
 import com.google.gwt.user.client.ui.Label;
 
 public class Publication extends AResultFragment {
-  
-  private String _title, _publicationString, _pmid;
+ 
+  private Node _article;
   
   public Publication(Node pubmedArticle) {
-    
-    _title = EntrezUtility.getNodeText(EntrezUtility.getFirstNodeOfTag(pubmedArticle, "MedlineTA"));
-    _pmid = EntrezUtility.getNodeText(EntrezUtility.getFirstNodeOfTag(pubmedArticle, "PMID")); 
-    
-    Node handler = EntrezUtility.getFirstNodeOfTag(pubmedArticle, "Journal"); 
-    if (handler != null) {
-      _publicationString = "Journal: " + _title + ". ";
-      
-      handler = EntrezUtility.getFirstNodeOfTag(pubmedArticle, "Year");
-      if (handler != null) _publicationString += EntrezUtility.getNodeText(handler);
-      
-      _publicationString += ";";
-      
-      addLabel(_publicationString); 
-    }
+    _article = pubmedArticle;
+    addLabel(toString()); 
+  }
+  
+  public String getTitle() {
+    return EntrezUtility.getNodeText(EntrezUtility.getFirstNodeOfTag(_article, "MedlineTA")) + ".";
+  }
+  
+  public String getVolume() {
+    Node handler = EntrezUtility.getFirstNodeOfTag(_article, "Volume");
+    return (handler == null) ? "" : EntrezUtility.getNodeText(handler);
+  }
+  
+  public String getIssue() {
+    Node handler = EntrezUtility.getFirstNodeOfTag(_article, "Issue");
+    return (handler == null) ? "" : "(" + EntrezUtility.getNodeText(handler) + "):";
+  }
+  
+  public String getPages() {
+    String pageString = "";
+    Node handler = EntrezUtility.getFirstNodeOfTag(_article, "StartPage");
+    pageString += (handler == null) ? "" : EntrezUtility.getNodeText(handler);
+    handler = EntrezUtility.getFirstNodeOfTag(_article, "EndPage");
+    pageString += (handler == null) ? "" : "-" + EntrezUtility.getNodeText(handler) + " ";
+    handler = EntrezUtility.getFirstNodeOfTag(_article, "MedlinePgn");
+    pageString += (handler == null) ? "" : EntrezUtility.getNodeText(handler);
+    return pageString + (pageString.equals("") ? "" : ".");
+  }
+  
+  public String getDate() {
+    Node handler = EntrezUtility.getFirstNodeOfTag(_article, "PubDate");
+    if (handler == null) return "";
+    String pubDate = "";
+    Node dateElem = EntrezUtility.getFirstNodeOfTag(handler, "Year");
+    pubDate += (dateElem == null) ? "" : " " + EntrezUtility.getNodeText(dateElem);
+    dateElem = EntrezUtility.getFirstNodeOfTag(handler, "Month");
+    pubDate += (dateElem == null) ? "" : " " + EntrezUtility.getNodeText(dateElem);
+    dateElem = EntrezUtility.getFirstNodeOfTag(handler, "Day");
+    pubDate += (dateElem == null) ? "" : " " + EntrezUtility.getNodeText(dateElem);
+    dateElem = EntrezUtility.getFirstNodeOfTag(handler, "Season");
+    pubDate += (dateElem == null) ? "" : " " + EntrezUtility.getNodeText(dateElem);
+    dateElem = EntrezUtility.getFirstNodeOfTag(handler, "MedlineDate");
+    pubDate += (dateElem == null) ? "" : " " + EntrezUtility.getNodeText(dateElem);
+    return pubDate + ";";
+  }
+  
+  public String endNoteCitation() {
+    return "";
+  }
+  
+  public String toString() {
+    return getTitle() + getDate() + getVolume() + getIssue() + getPages();
   }
 }

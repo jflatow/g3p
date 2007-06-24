@@ -31,8 +31,8 @@ public class HoverLink extends FlowPanel {
   public HoverLink(String text, String targetHistoryToken, ClickListener listener, String styleName) {
     _link = new Hyperlink(text, targetHistoryToken);
     _link.addClickListener(listener);
-    setStyleName(styleName);
     add(_link);
+    setStyleName(styleName);
   }
   
   public void setText(String text) {

@@ -38,7 +38,7 @@ public class AuthorList extends AResultFragment {
         _authors[j] = (lastName != null ? EntrezUtility.getNodeText(lastName) : "") + " " 
           + (initials != null ? EntrezUtility.getNodeText(initials) : "");
       }
-      addLabel("Authors: " + authorString()); 
+      addLabel(authorString()); 
     } 
   }
   
@@ -46,9 +46,14 @@ public class AuthorList extends AResultFragment {
     String s = "";
     if (_authors != null) {
       for (int i = 0; i < _authors.length; i++) {
+        if (i == 3) return s + "et al.";
         s += _authors[i] + (i == _authors.length - 1 ? "." : ", ");
       }
     }
     return s;
+  }
+  
+  public String endNoteCitation() {
+    return "";
   }
 }

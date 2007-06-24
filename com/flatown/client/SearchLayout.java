@@ -17,9 +17,12 @@
 package com.flatown.client;
 
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.user.client.ui.MouseListenerAdapter;
 import com.google.gwt.user.client.DOM;
 
 public class SearchLayout extends FlowPanel {
@@ -31,6 +34,7 @@ public class SearchLayout extends FlowPanel {
   private ChameleonBox _chamBox;
   private ListBox _numResults;
   private HoverLink _searchLink, _favLink;
+  private DragBar _dragBar;
   
   /** The associated ResultsBox */
   private ResultsBox _resultsbox;
@@ -43,10 +47,27 @@ public class SearchLayout extends FlowPanel {
     _searchbox = searchbox;
     _resultsbox = new ResultsBox(_searchbox);
     
-    this.add(createTopPanel());
-    this.add(createBottomPanel());
+    this.add(createDragBar());
     this.add(_resultsbox);
     this.setStyleName("searchbox-LayoutPanel");
+    DOM.setStyleAttribute(getElement(), "overflowX", "hidden");
+  }
+  
+  /** Creates the draggable part of the layout */
+  public FocusPanel createDragBar() {
+    _dragBar = new DragBar();
+    FlowPanel dragPanel = new FlowPanel();
+    dragPanel.add(createTopPanel());
+    dragPanel.add(createBottomPanel());
+    _dragBar.setWidget(dragPanel);
+    _dragBar.setDragWidget(_searchbox);
+    _dragBar.addMouseListener(new MouseListenerAdapter() {
+      public void onMouseEnter(Widget sender) {
+          ResultsBox.hideHover();
+          ResultsBox.collapse();
+      }
+    });
+    return _dragBar;
   }
   
   /** Creates the top layer panel of the SearchBox
@@ -54,7 +75,7 @@ public class SearchLayout extends FlowPanel {
    */
   private FlowPanel createTopPanel() {
     /* Instantiate all the items that we will actually save handles to */
-    _chamBox = new ChameleonBox();
+    _chamBox = new ChameleonBox(_resultsbox);
     _searchLink = new HoverLink("Search", "searchToken", _searchbox);
     
     /* Put the panel together and return it */
@@ -139,6 +160,11 @@ public class SearchLayout extends FlowPanel {
     return _chamBox.areResultsDisplayed();
   }
   
+  /** Set whether or not to display the results for this SearchBox */
+  public void setResultsDisplayed(boolean b) {
+    _chamBox.setResultsDisplayed(b);
+  }
+  
   /** Whether or not the ChameleonBox is editable */
   public boolean isEditable() {
     return _chamBox.isEditable();
@@ -148,6 +174,7 @@ public class SearchLayout extends FlowPanel {
   public void makeFavorite() {
     _chamBox.setEditable(false);
     _favLink.setText("Remove");
+    _dragBar.attachToDragHost(FavoritesPanel.Singleton);
   }
   
   /** Returns the favorites link for this layout panel */

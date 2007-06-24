@@ -41,6 +41,7 @@ public class ESearch extends YieldsEnvironment {
     _defaultParams = new URLParams();
     _defaultParams.setParam("usehistory", new StringParam("y"));
     _defaultParams.setParam("retmax", new IntParam(10));
+    _defaultParams.setParam("sort", new StringParam("pub+date"));
   }
     
   /** What to do if we are going to a browser */

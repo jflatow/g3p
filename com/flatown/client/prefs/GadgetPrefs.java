@@ -16,7 +16,10 @@
 
 package com.flatown.client.prefs;
 
+import java.util.Date;
+
 import com.flatown.client.FavoritesPanel;
+import com.flatown.client.BookmarksPanel;
 import com.flatown.client.SearchBox;
 
 import com.google.gwt.json.client.JSONParser;
@@ -28,12 +31,28 @@ import com.google.gwt.json.client.JSONObject;
  */
 public class GadgetPrefs implements Preferences {
   
+  public Date LastLogin;
+  
   public boolean loadFavorites() {
     return igLoadFavorites();
   }
   
   public void saveFavorites() {
     igSaveFavorites();
+  }
+  
+  public boolean loadBookmarks() {
+    return igLoadBookmarks();
+  }
+  
+  public void saveBookmarks() {
+    igSaveBookmarks();
+  }
+  
+  public void updateLastLogin() {
+    if (!hasPrefs()) return;
+    LastLogin = new Date(Long.parseLong(getPref("lastLog")));
+    setPref("lastLog", String.valueOf(new Date().getTime()));
   }
   
   public static boolean igLoadFavorites() {
@@ -56,6 +75,20 @@ public class GadgetPrefs implements Preferences {
     setPref("favs", FavoritesPanel.Singleton.toJSON().toString());
   }
 
+  public static boolean igLoadBookmarks() {
+    if (!hasPrefs()) return false;
+    String bookmarkString = getPref("bookmarks");
+    if (bookmarkString.equals("")) return false;
+    JSONArray bookmarks = JSONParser.parse(bookmarkString).isArray();
+    BookmarksPanel.Singleton.loadBookmarks(bookmarks);
+    return bookmarks.size() > 0;
+  }
+  
+  public static void igSaveBookmarks() {
+    if (!hasPrefs()) return;
+    setPref("bookmarks", BookmarksPanel.Singleton.toJSON().toString());
+  }
+  
   private static native boolean hasPrefs() /*-{  
    return ($wnd.parent.prefs) ? true : false;
   }-*/;

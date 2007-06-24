@@ -30,6 +30,7 @@ import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.json.client.JSONObject;
 import com.google.gwt.json.client.JSONString;
 import com.google.gwt.json.client.JSONNumber;
+import com.google.gwt.json.client.JSONBoolean;
 
 public class SearchBox extends FormPanel implements ClickListener {
   
@@ -69,6 +70,9 @@ public class SearchBox extends FormPanel implements ClickListener {
     _layoutPanel.setSearchQuery(searchbox.get("query").isString().stringValue());
     _layoutPanel.setDatabase(searchbox.get("dbName").isString().stringValue());
     _layoutPanel.setNumResults((int)(searchbox.get("numResults").isNumber().getValue()));
+    
+    JSONValue vis;
+    if ((vis = searchbox.get("vis")) != null) _layoutPanel.setResultsDisplayed(vis.isBoolean().booleanValue());
   }
   
   /** Called whenever a button is clicked on this SearchBox */
@@ -123,7 +127,21 @@ public class SearchBox extends FormPanel implements ClickListener {
     json.put("query", new JSONString(getSearchQuery()));
     json.put("dbName", new JSONString(getDatabase()));
     json.put("numResults", new JSONNumber(getNumResults()));
+    json.put("vis", JSONBoolean.getInstance(areResultsDisplayed()));
     return json;
+  }
+  
+  /** Tells whether or not the CheckBox is checked, which determines
+   * if results should be displayed for the SearchBox
+   */
+  public boolean areResultsDisplayed() {
+    return _layoutPanel.areResultsDisplayed();
+  }
+  
+  /** Use this to force the searchbox to perform a new search on its values */
+  public void search() {
+    GBox.Prefs.saveFavorites();
+    EntrezEngine.Singleton.search(this);
   }
   
   /** Specialized FormHandler for this Form. 
@@ -137,9 +155,8 @@ public class SearchBox extends FormPanel implements ClickListener {
     public void onSubmit(FormSubmitEvent event) {
       /* Perform form validation here */
       if (getSearchQuery().equals("")) return;
-      /* Configure the action to take */
-      // setAction("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/esearch.fcgi");
-      EntrezEngine.Singleton.search(SearchBox.this);
+      /* Request the search be made */
+      SearchBox.this.search();
       /* Always cancel the submission, since we aren't actually using the form to submit */
       event.setCancelled(true);
     }

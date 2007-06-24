@@ -45,7 +45,7 @@ public abstract class EntrezUtility implements XmlParser {
   
   public EntrezUtility(SinksEntrezUtil sink) {
     this();
-    _formattedSink = sink; 
+    _formattedSink = sink;
   }
   
   public void run(URLParams params) {
@@ -90,7 +90,7 @@ public abstract class EntrezUtility implements XmlParser {
     for (int i = 0; i < children.getLength(); i++) {
       result += makeString(children.item(i));
     }
-    return result;
+    return result; 
   }
   
   public static boolean hasAtLeastOne(Document doc, String tagName) {
@@ -110,6 +110,7 @@ public abstract class EntrezUtility implements XmlParser {
   }
   
   public static String getNodeText(Node node) {
+    if (node.getFirstChild() == null) return "";
     return ((Text)node.getFirstChild()).getData();
   }
 }

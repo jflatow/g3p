@@ -37,18 +37,23 @@ public class GBox extends TabPanel {
   private GBox() {
     this.add(FavoritesPanel.Singleton, "Favorites");
     this.add(SearchPanel.Singleton, "Search");
+    this.add(BookmarksPanel.Singleton, "Bookmarks");
     this.add(HelpPanel.Singleton, "Help");
     
     insertSpacer(5, 2);
     insertSpacer(5, 4);
+    insertSpacer(5, 6);
     
     Prefs = new GadgetPrefs();
+    Prefs.updateLastLogin();
     this.selectTab(Prefs.loadFavorites() ? 0 : 1);
+    Prefs.loadBookmarks();
     
     Window.addWindowResizeListener(new WindowResizeListener() {
       public void onWindowResized(int width, int height) {
         DOM.setStyleAttribute(FavoritesPanel.Singleton.getElement(), "maxHeight", height - 40 + "px");
         DOM.setStyleAttribute(SearchPanel.Singleton.getElement(), "maxHeight", height - 40 + "px");
+        DOM.setStyleAttribute(BookmarksPanel.Singleton.getElement(), "maxHeight", height - 40 + "px");
         DOM.setStyleAttribute(HelpPanel.Singleton.getElement(), "maxHeight", height - 40 + "px");
       }
     });

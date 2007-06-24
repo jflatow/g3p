@@ -16,27 +16,53 @@
 
 package com.flatown.client;
 
-import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.Label;
 
+import com.google.gwt.user.client.Window;
 /** Class for an object containing a single search result
  * 
  */
-public class AResult extends FocusPanel {
+public class AResult extends DragBar implements PopupWidget {
  
-  private FlowPanel _displayPanel;
+  protected FlowPanel _displayPanel;
+  protected HoverLink _save;
   
   public AResult() {
     // an empty result has an empty flowpanel widget
     _displayPanel = new FlowPanel();
     setWidget(_displayPanel);
     setStyleName("aresult");
+    _save = new HoverLink("Save Bookmark", "saveToken", BookmarksPanel.Singleton);
+  }
+  
+  public void setSaveText(String text) {
+    _save.setText(text);
   }
   
   public void add(Widget w) {
     _displayPanel.add(w);
+  }
+  
+  public boolean remove(Widget w) {
+    return _displayPanel.remove(w);
+  }
+  
+  public void clear() {
+    _displayPanel.clear();
+  }
+  
+  public void showHover() {}
+  
+  public void hideHover() {}
+  
+  public void expand() {}
+  
+  public void collapse() {}
+  
+  public void slide(int start, int end) {
+    SlideTimer.Singleton.slide(this, start, end);
   }
   
   /** Convenience method for adding Labels as new layers to the AResult */
@@ -46,7 +72,7 @@ public class AResult extends FocusPanel {
     add(label);
   }
   
-  public void attachToResultsBox(ResultsBox container) {
-    // add the mouseListener to swap positions in the container on drag
+  public void attachToPopupHost(PopupHost host) {
+    addMouseListener(host.getPopupListener());
   }
 }

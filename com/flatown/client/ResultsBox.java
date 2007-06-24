@@ -19,31 +19,83 @@ package com.flatown.client;
 import com.flatown.client.eutils.SinksEntrezUtil;
 import com.flatown.client.eutils.EntrezException;
 
+import com.google.gwt.user.client.DOM;
+
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
-
-import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.ui.MouseListener;
+import com.google.gwt.user.client.ui.MouseListenerAdapter;
 
 /** ResultsBoxes contain results for an associated SearchBox
  * 
  */
-public class ResultsBox extends FlowPanel implements SinksEntrezUtil {
+public class ResultsBox extends FlowPanel implements SinksEntrezUtil, PopupHost {
   
   private SearchBox _searchbox;
   
   private boolean _displayLog;
   private AResult _log;
   
+  private static AResult _hoverOwner, _downOwner, _clickOwner;
+  private static MouseListener _PopupListener;
+  
   public ResultsBox(SearchBox searchbox) {
     _searchbox = searchbox;
     _displayLog = true;
     _log = new AResult();
     this.setStyleName("resultsbox");
+    
+    _PopupListener = new MouseListenerAdapter() {
+      public void onMouseEnter(Widget sender) {
+        if (sender instanceof AResult) {
+          if (sender != _hoverOwner) {
+            hideHover();
+            _hoverOwner = (AResult)sender;
+            _hoverOwner.showHover();
+          }
+        }
+      }
+      
+      public void onMouseLeave(Widget sender) {
+        if (sender instanceof AResult) {
+          _hoverOwner = (AResult)sender;
+          _hoverOwner.hideHover();
+        }
+      }
+      
+      public void onMouseDown(Widget sender, int x, int y) {
+        if (sender instanceof AResult && !SlideTimer.BUSY) {
+            _downOwner = (AResult)sender;
+        }
+      }
+      
+      public void onMouseUp(Widget sender, int x, int y) {
+        if (sender instanceof AResult && !SlideTimer.BUSY) {
+          if (_clickOwner != sender) collapse();
+          if (_downOwner == sender) {
+            _clickOwner = _downOwner;
+            _clickOwner.expand();
+          }
+        }
+      }
+    };
   }
-  
+   
   public SearchBox getSearchBox() {
     return _searchbox;
+  }
+  
+  public static void hideHover() {
+    if (_hoverOwner != null) {
+      _hoverOwner.hideHover();
+      _hoverOwner = null;
+    }
+  }
+  
+  public static void collapse() {
+    if (_clickOwner == null) return;
+    _clickOwner.collapse();
   }
   
   /** Allows the ResultsBox to implement SinkEntrezUtil */
@@ -51,6 +103,7 @@ public class ResultsBox extends FlowPanel implements SinksEntrezUtil {
     clearResults();
     for (int i = 0; i < results.length; i++) {
       add(results[i]);
+      results[i].attachToPopupHost(this);
     }
   }
   
@@ -59,8 +112,7 @@ public class ResultsBox extends FlowPanel implements SinksEntrezUtil {
     // handle/display an entrez exception
     if (_displayLog) {
       clearResults();
-      AResult header = new AResult();
-      header.add(new Label(e.toString()));
+      AResultFragment header = new AResultFragment(e.toString());
       add(header);
       add(_log); 
     }
@@ -75,5 +127,9 @@ public class ResultsBox extends FlowPanel implements SinksEntrezUtil {
     for (int i = getWidgetCount(); i > 0; i--) {
       remove(i-1);
     }
+  }
+  
+  public MouseListener getPopupListener() {
+    return _PopupListener;
   }
 }
