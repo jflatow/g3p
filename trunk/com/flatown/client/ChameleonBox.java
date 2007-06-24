@@ -21,6 +21,8 @@ import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.CheckBox;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.DOM;
 
 /** A ChameleonBox displays different elements depending on whether or not the parent SearchBox is editable.
@@ -38,11 +40,13 @@ public class ChameleonBox extends FlowPanel {
   private ListBox _dbMenu;
   private CheckBox _displayResults;
   private Label _searchQuery;
+  private ResultsBox _resultsbox;
   
   /** Constructor for a ChameleonBox
    * 
    */
-  public ChameleonBox() {
+  public ChameleonBox(ResultsBox resultsbox) {
+    _resultsbox = resultsbox;
     /* When a ChameleonBox is first created, it is editable. It only becomes uneditable
      * when the SearchBox gets moved to the FavoritesPanel.
      */
@@ -112,6 +116,12 @@ public class ChameleonBox extends FlowPanel {
     _displayResults.setChecked(true);
     _displayResults.setVisible(false);
     DOM.setStyleAttribute(_displayResults.getElement(), "cssFloat", "left");
+    _displayResults.addClickListener(new ClickListener() {
+      public void onClick(Widget sender) {
+        _resultsbox.setVisible(areResultsDisplayed());
+        GBox.Prefs.saveFavorites();
+      }
+    });
   }
   
   /** Instantiates a label that displays the search query */
@@ -152,5 +162,10 @@ public class ChameleonBox extends FlowPanel {
    */
   public boolean areResultsDisplayed() {
     return _displayResults.isChecked();
+  }
+  
+  /** Set whether or not to display the results for this ChamBox */
+  public void setResultsDisplayed(boolean b) {
+    _displayResults.setChecked(b);
   }
 }

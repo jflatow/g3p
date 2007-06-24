@@ -16,27 +16,11 @@
 
 package com.flatown.client;
 
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MouseListener;
 
-import com.google.gwt.user.client.DOM;
-
-public class AResultFragment extends FlowPanel {
-
-  public AResultFragment() {
-    setStyleName("aResultFragment");
-    DOM.setStyleAttribute(getElement(), "width", "100%");
-  }
-  
-  public AResultFragment(String text) {
-    this();
-    addLabel(text);
-  }
-  
-  /** Convenience method for adding Labels as new layers to the AResultFragment */
-  public void addLabel(String s) {
-    Label label = new Label(s);
-    label.setStyleName("aResultFragment");
-    add(label);
-  }
+/** Interface for a panel that wants to control popups for its children
+ * Very flexible so be careful.
+ */
+public interface PopupHost {
+  public MouseListener getPopupListener();
 }

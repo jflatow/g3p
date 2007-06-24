@@ -103,9 +103,11 @@ form iframe {
 }
 
 .aresult {
+	width: 100%;
+	padding: 2px;
 	float: left;
 	clear: right;
-	margin: 2px 0px 2px 0px;
+	border-bottom: 1px solid #E5ECF9;
 }
 
 /************************** Styles for Miscellaneous *********************/

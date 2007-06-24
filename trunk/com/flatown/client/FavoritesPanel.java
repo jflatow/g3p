@@ -23,23 +23,62 @@ import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.VerticalPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
+import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Label;
+import com.google.gwt.user.client.ui.MouseListener;
+import com.google.gwt.user.client.ui.MouseListenerAdapter;
 
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.json.client.JSONArray;
 
-public class FavoritesPanel extends ScrollPanel {
+public class FavoritesPanel extends ScrollPanel implements DragHost {
   
   public static final FavoritesPanel Singleton = new FavoritesPanel();
   
   private VerticalPanel _favorites;
+  private FocusPanel _listenerPanel;
+  private DragBar _clicked;
+  private MouseListener _dragListener;
   
   private FavoritesPanel() {
     _favorites = new VerticalPanel();
-    setWidget(_favorites);
     _favorites.setStyleName("favorites");
+    
+    _listenerPanel = new FocusPanel(_favorites);
+    _listenerPanel.addMouseListener(new MouseListenerAdapter() {
+      public void onMouseLeave(Widget sender) {
+        _clicked = null;
+      }
+      
+      public void onMouseUp(Widget sender, int x, int y) {
+        _clicked = null;
+      }
+    });
+    
+    setWidget(_listenerPanel);
     setStyleName("favoritesPanel");
     DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 50 + "px");
+    
+    _dragListener = new MouseListenerAdapter() {
+      public void onMouseEnter(Widget sender) {
+        if (sender instanceof DragBar) {
+          DragBar bar = (DragBar)sender;
+          if (isClicked() && _clicked != bar) {
+            int newPos = _favorites.getWidgetIndex(bar.getDragWidget());
+            _favorites.remove(_clicked.getDragWidget());
+            _favorites.insert(_clicked.getDragWidget(), newPos);
+          }
+        }
+      }
+      
+      public void onMouseDown(Widget sender, int x, int y) {
+        if (sender instanceof DragBar) _clicked = (DragBar)sender;
+      }
+      
+      public void onMouseUp(Widget sender, int x, int y) {
+        if (isClicked()) GBox.Prefs.saveFavorites();
+      }
+    };
   }
   
   /** Adds a SearchBox to the FavoritesPanel, but only if it doesn't already exist (and is non-empty) */
@@ -47,6 +86,9 @@ public class FavoritesPanel extends ScrollPanel {
     if (!searchBox.getSearchQuery().equals("") 
           && !containsSearch(searchBox.getSearchQuery(), searchBox.getDatabase())) {
       _favorites.add(searchBox);
+      // have the searchbox search
+      searchBox.getResultsBox().setVisible(searchBox.areResultsDisplayed());
+      searchBox.search();
       GBox.Prefs.saveFavorites();
     }
   }
@@ -82,5 +124,14 @@ public class FavoritesPanel extends ScrollPanel {
       }
     }
     return json;
+  }
+  
+  /** Implement the DragHost interface */
+  public MouseListener getDragListener() {
+    return _dragListener;
+  }
+  
+  public boolean isClicked() {
+    return _clicked == null ? false : true;
   }
 }

@@ -19,6 +19,10 @@ package com.flatown.client.prefs;
 
 public interface Preferences {
   public boolean loadFavorites();
-  
   public void saveFavorites();
+  
+  public boolean loadBookmarks();
+  public void saveBookmarks();
+  
+  public void updateLastLogin();
 }

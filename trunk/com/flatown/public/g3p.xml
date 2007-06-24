@@ -4,6 +4,8 @@
    <Require feature="setprefs"/>
  </ModulePrefs>
  <UserPref name="favs" default_value="" datatype="hidden"/>
+ <UserPref name="bookmarks" default_value="" datatype="hidden"/>
+ <UserPref name="lastLog" default_value="0" datatype="hidden"/>
  <Content type="html">
  <![CDATA[
  	<style type="text/css">
