@@ -66,8 +66,8 @@ public class ChameleonBox extends FlowPanel {
     this.add(_searchQuery);
     
     /* Format the element properly */
-    DOM.setStyleAttribute(this.getElement(), "cssFloat", "left");
-    DOM.setStyleAttribute(this.getElement(), "width", "auto");
+    setStyleName("leftFloat");
+    //DOM.setStyleAttribute(this.getElement(), "width", "auto");
     DOM.setStyleAttribute(this.getElement(), "padding", "0px 0px 5px 5px");
   }
   
@@ -115,7 +115,7 @@ public class ChameleonBox extends FlowPanel {
     _displayResults = new CheckBox();
     _displayResults.setChecked(true);
     _displayResults.setVisible(false);
-    DOM.setStyleAttribute(_displayResults.getElement(), "cssFloat", "left");
+    _displayResults.setStyleName("leftFloat");
     _displayResults.addClickListener(new ClickListener() {
       public void onClick(Widget sender) {
         _resultsbox.setVisible(areResultsDisplayed());

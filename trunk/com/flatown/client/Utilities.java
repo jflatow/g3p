@@ -18,6 +18,9 @@ package com.flatown.client;
 
 import com.google.gwt.user.client.ui.ListBox;
 
+/**
+ * Miscellaneous useful functions that have no home.
+ */
 public class Utilities {
   
   /** Selects an item in a ListBox with text the same as the given string, if it exists
@@ -30,4 +33,9 @@ public class Utilities {
       }
     }
   }
+  
+  /** Calls the underlying javascript escape function */
+  public static native String escape(String s) /*-{
+    return escape(s);
+  }-*/;
 }

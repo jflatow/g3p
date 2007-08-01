@@ -14,15 +14,10 @@
  * the License.
  */
 
-package com.flatown.client.eutils;
+package com.flatown.client.io;
 
-import com.flatown.client.AResult;
-
-/** 
- * Interface for an object that can sink an EntrezUtility and that doesn't extend EntrezUtility (namely, {@link ResultsBox}).
- */
-public interface SinksEntrezUtil {
-  public void setResults(AResult[] results);
-  public void onEntrezError(EntrezException e);
-  public void logError(String logEntry);
+public class ImportException extends PortException {
+  public ImportException(String msg) {
+    super(msg);
+  }
 }

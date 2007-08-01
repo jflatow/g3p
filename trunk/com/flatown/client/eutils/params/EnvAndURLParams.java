@@ -16,7 +16,7 @@
 
 package com.flatown.client.eutils.params;
 
-/** Holds the parameters for an EntrezUtility */
+/** Holds the parameters for an EntrezUtility that can take a WebEnv and QueryKey or an IdList */
 public class EnvAndURLParams extends URLParams {
   
   public void setEnv(String webenv, int querykey) {

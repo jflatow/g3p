@@ -71,15 +71,16 @@ form iframe {
 .searchbox .searchbox-LayoutPanel {
 	width: 100%;
 	float: left;
-	clear: right;
+	clear: both;
 	margin: 0px 0px 5px 0px;
 	background-color: #E5ECF9;
+	overflow-x: hidden;
 }
 
 .searchbox .searchbox-Layer {
 	width: 100%;
 	float: left;
-	clear: right;
+	clear: both;
 }
 
 .searchbox .gwt-Label {
@@ -98,7 +99,7 @@ form iframe {
 	width: 100%;
 	background-color: white;
 	float: left;
-	clear: right;
+	clear: both;
 	margin: 5px 0px 0px 0px;
 }
 
@@ -106,7 +107,7 @@ form iframe {
 	width: 100%;
 	padding: 2px;
 	float: left;
-	clear: right;
+	clear: both;
 	border-bottom: 1px solid #E5ECF9;
 }
 
@@ -116,6 +117,12 @@ form iframe {
 	clear: none;
 	display: inline;
 	margin: 0px 5px 0px 5px;
+}
+
+.shareLink {
+	float: left;
+	clear: none;
+	margin: 5px 5px 5px 0px;
 }
 
 .favorites {
@@ -130,5 +137,11 @@ form iframe {
 
 .aResultFragment {
 	float: left;
-	clear: right;
+	clear: both;
+	width: 100%;
+}
+
+/** So IE doesn't get confused when we want to set the cssFloat attribute (this is why we hate IE) */
+.leftFloat {
+	float: left;
 }

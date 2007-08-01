@@ -17,11 +17,17 @@
 package com.flatown.client;
 
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.MouseListener;
 
-/** Interface for a panel that wants to control popups for its children
- * Very flexible so be careful.
+/** 
+ * Interface for an object that wants to be able to attach to a {@link PopupHost}. Implementors
+ * of this interface need only define what to do when something tries to attach this object
+ * to a PopupHost.
  */
 public interface PopupWidget {
+  /**
+   * Attaches this object to a host.
+   * 
+   * @param host the PopupHost that we are told to attach to
+   */
   public void attachToPopupHost(PopupHost host);
 }

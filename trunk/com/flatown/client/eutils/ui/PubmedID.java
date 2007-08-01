@@ -27,6 +27,7 @@ import com.google.gwt.user.client.ui.ClickListener;
 
 import com.google.gwt.xml.client.Node;
 // now that we can pass data with the hoverlink we can move the clicklistener into the host: resultsbox?
+// might be slightly better memory usage but this is much clearer, and the listener is pretty lightweight
 public class PubmedID extends AResultFragment implements ClickListener {
   
   private String _pmid; 

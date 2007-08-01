@@ -31,7 +31,9 @@ import com.google.gwt.user.client.Window;
 
 /** This interface encompasses all the EUtils, which need to be able to run
  * and should create results for a ResultsBox when they are finished running. In order to extend
- * this class a utility should implement a parseResults method and define the Name.
+ * this class a utility should at least implement a formatResults method and define the name and doctype.
+ * 
+ * @see ESearch for an example
  */
 public abstract class EntrezUtility implements XmlParser {
   

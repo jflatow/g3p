@@ -38,11 +38,13 @@ public class GBox extends TabPanel {
     this.add(FavoritesPanel.Singleton, "Favorites");
     this.add(SearchPanel.Singleton, "Search");
     this.add(BookmarksPanel.Singleton, "Bookmarks");
+    this.add(SharePanel.Singleton, "Share");
     this.add(HelpPanel.Singleton, "Help");
     
     insertSpacer(5, 2);
     insertSpacer(5, 4);
     insertSpacer(5, 6);
+    insertSpacer(5, 8);
     
     Prefs = new GadgetPrefs();
     Prefs.updateLastLogin();

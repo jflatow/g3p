@@ -19,6 +19,7 @@ package com.flatown.client.eutils.ui;
 import com.flatown.client.AResult;
 import com.flatown.client.AResultFragment;
 import com.flatown.client.HoverLink;
+import com.flatown.client.io.ExportException;
 import com.flatown.client.eutils.EntrezUtility;
 
 import com.google.gwt.xml.client.Node;
@@ -33,38 +34,45 @@ import com.google.gwt.user.client.DOM;
 
 import com.google.gwt.user.client.Window;
 
+/**
+ * The main type of AResult used by the engine, since most pipelines end with an EFetch.
+ */
 public class PubmedArticle extends AResult implements ClickListener {
    
   private Node _article;
-  private AResultFragment _title, _abstract;
+  private ArticleTitle _title;
+  private AResultFragment _abstract;
   private Publication _publication;
   private PubmedID _pmid;
   private AuthorList _authors;
-  private HoverLink _endNoteLink;
+  private HoverLink _exportLink;
   private int _normalHeight;
   
   public PubmedArticle(Node pubmedArticle) {
     _article = pubmedArticle;  
     
-    _title = new AResultFragment(makeTitle());
-    _authors = makeAuthors();
-    _publication = makePublication();
+    _title = new ArticleTitle(EntrezUtility.getFirstNodeOfTag(_article, "ArticleTitle"));
+    
+    _authors = new AuthorList(EntrezUtility.getFirstNodeOfTag(_article, "AuthorList")); 
+    DOM.setStyleAttribute(_authors.getElement(), "fontStyle", "italic");
+    
+    _publication = new Publication(_article);
     
     String abstractText = makeAbstract();
     if (abstractText.length() - 1 > 250) abstractText = abstractText.substring(0, 250) + "...";
     _abstract = new AResultFragment(abstractText);
     
-    _pmid = makeId();
+    _pmid = new PubmedID(_article);
     _save.getLink().setTargetHistoryToken(_pmid.toString());
     
-    _endNoteLink = new HoverLink("EndNote", "endnoteToken", this);
+    _exportLink = new HoverLink("Tag for Export", "exportToken", this);
 
     add(_title);
     add(_publication);
     add(_authors);
     add(_abstract);
     add(_pmid);
-    add(_endNoteLink);
+    add(_exportLink);
     add(_save);
     collapse();
     hideHover();
@@ -75,7 +83,7 @@ public class PubmedArticle extends AResult implements ClickListener {
   }
   
   public String endNoteCitation() {
-    return "";
+    return _authors.endNoteCitation() + _title.endNoteCitation() + _publication.endNoteCitation(); // "%X " + _abstract?
   }
   
   private String makeAbstract() {
@@ -83,27 +91,20 @@ public class PubmedArticle extends AResult implements ClickListener {
     return (handler == null) ? "" : EntrezUtility.getNodeText(handler);
   }
   
-  private AuthorList makeAuthors() {
-    AuthorList authors = new AuthorList(EntrezUtility.getFirstNodeOfTag(_article, "AuthorList")); 
-    DOM.setStyleAttribute(authors.getElement(), "fontStyle", "italic");
-    return authors;
+  public AuthorList getAuthors() {
+    return _authors;
   }
   
-  private String makeTitle() {
-    return EntrezUtility.getNodeText(EntrezUtility.getFirstNodeOfTag(_article, "ArticleTitle"));
+  public ArticleTitle getArticleTitle() {
+    return _title;
   }
   
-  private Publication makePublication() {
-    Publication publication = new Publication(_article);
-    return publication;
+  public Publication getPublication() {
+    return _publication;
   }
   
-  private PubmedID makeId() {
-    return new PubmedID(_article);
-  }
- 
-  private String makeMesh() {
-    return "";
+  public PubmedID getId() {
+    return _pmid;
   }
   
   public void showHover() {
@@ -129,7 +130,7 @@ public class PubmedArticle extends AResult implements ClickListener {
     _authors.setVisible(true);
     _abstract.setVisible(true);
     _pmid.setVisible(true);
-    _endNoteLink.setVisible(true);
+    _exportLink.setVisible(true);
     _save.setVisible(true);
     //slide(_normalHeight, _displayPanel.getOffsetHeight());
   }
@@ -138,24 +139,39 @@ public class PubmedArticle extends AResult implements ClickListener {
     _authors.setVisible(false);
     _abstract.setVisible(false);
     _pmid.setVisible(false);
-    _endNoteLink.setVisible(false);
+    _exportLink.setVisible(false);
     _save.setVisible(false);
     //setHeight(_normalHeight + "px");
   }
   
-  public void makeEndNote() {}
+  public void tagForExport() {
+    super.tagForExport();
+    _exportLink.setText("Untag for Export");
+  }
+  
+  public String performExport(String format) throws ExportException {
+    if (format.equals("EndNote")) {
+      return endNoteCitation();
+    } else {
+      return super.performExport(format);
+    }
+  }
+  
+  public boolean equals(Object obj) {
+    if (obj instanceof PubmedArticle)
+      return ((PubmedArticle)obj).getId().toString().equals(_pmid.toString());
+    return false;
+  }
   
   public void onClick(Widget sender) {
     if (sender instanceof Hyperlink) {
       Hyperlink link = (Hyperlink)sender;
-      if (link.getText().equals("EndNote")) {
-        makeEndNote();
-        link.setText("Standard");
-      } else if (link.getText().equals("Standard")) {
-        showHover();
-        link.setText("EndNote");
+      if (link.getText().equals("Tag for Export")) {
+        PubmedArticle copy = new PubmedArticle(_article);
+        copy.tagForExport();
+      } else if (link.getText().equals("Untag for Export")) {
+        untagForExport();
       }
     }
-    // if its text is Normal, display the normal citation
   }
 }

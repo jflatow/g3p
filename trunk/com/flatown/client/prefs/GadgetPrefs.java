@@ -21,13 +21,15 @@ import java.util.Date;
 import com.flatown.client.FavoritesPanel;
 import com.flatown.client.BookmarksPanel;
 import com.flatown.client.SearchBox;
+import com.flatown.client.Utilities;
 
 import com.google.gwt.json.client.JSONParser;
 import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONObject;
 
-/** Preferences specific to a gadget 
- * Don't use a Singleton because we don't want GadgetPrefs taking up memory if it's not being used 
+/** 
+ * Preferences specific to a gadget 
+ * Don't use a Singleton because we don't want GadgetPrefs taking up memory if it's not being used.
  */
 public class GadgetPrefs implements Preferences {
   
@@ -53,6 +55,12 @@ public class GadgetPrefs implements Preferences {
     if (!hasPrefs()) return;
     LastLogin = new Date(Long.parseLong(getPref("lastLog")));
     setPref("lastLog", String.valueOf(new Date().getTime()));
+  }
+  
+  public String instanceURL() {
+    return "http://gmodules.com/ig/ifr?url=" + hostURL() + "/g3p.xml" +
+      "&up_favs=" + Utilities.escape(FavoritesPanel.Singleton.toJSON().toString()) +
+      "&up_bookmarks=" + Utilities.escape(BookmarksPanel.Singleton.toJSON().toString());
   }
   
   public static boolean igLoadFavorites() {
@@ -99,5 +107,9 @@ public class GadgetPrefs implements Preferences {
     
   private static native void setPref(String name, String value) /*-{
    $wnd.parent.prefs.set(name, value);
+  }-*/;
+  
+  private static native String hostURL() /*-{
+   return $wnd.parent.host;
   }-*/;
 }

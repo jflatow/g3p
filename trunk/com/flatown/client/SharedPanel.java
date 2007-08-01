@@ -14,15 +14,19 @@
  * the License.
  */
 
-package com.flatown.client.eutils;
+package com.flatown.client;
 
-import com.flatown.client.AResult;
+import com.google.gwt.user.client.DOM;
 
-/** 
- * Interface for an object that can sink an EntrezUtility and that doesn't extend EntrezUtility (namely, {@link ResultsBox}).
+import com.google.gwt.user.client.ui.FlowPanel;
+
+/**
+ * The abstract class for panels in the SharePanel.
  */
-public interface SinksEntrezUtil {
-  public void setResults(AResult[] results);
-  public void onEntrezError(EntrezException e);
-  public void logError(String logEntry);
+public abstract class SharedPanel extends FlowPanel {
+  
+  public SharedPanel() {
+    DOM.setStyleAttribute(getElement(), "margin", "5px 0px 5px 0px");
+    DOM.setStyleAttribute(getElement(), "overflowX", "hidden");
+  }
 }

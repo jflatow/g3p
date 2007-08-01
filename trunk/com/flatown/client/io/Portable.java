@@ -14,15 +14,16 @@
  * the License.
  */
 
-package com.flatown.client.eutils;
+package com.flatown.client.io;
 
-import com.flatown.client.AResult;
+import com.google.gwt.user.client.ui.Widget;
+import com.google.gwt.xml.client.Element;
 
-/** 
- * Interface for an object that can sink an EntrezUtility and that doesn't extend EntrezUtility (namely, {@link ResultsBox}).
- */
-public interface SinksEntrezUtil {
-  public void setResults(AResult[] results);
-  public void onEntrezError(EntrezException e);
-  public void logError(String logEntry);
+public interface Portable {
+  
+  public void performImport(Element portableObject) throws ImportException;
+  
+  public String performExport(String format) throws ExportException;
+  
+  public Widget getWidget();
 }

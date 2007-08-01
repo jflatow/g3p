@@ -19,21 +19,33 @@ package com.flatown.client;
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.Label;
 
-import com.google.gwt.user.client.DOM;
-
+/**
+ * AResultFragment is an object meant to be displayed as a descendant of an {@link AResult}, though this is not enforced.
+ */
 public class AResultFragment extends FlowPanel {
 
+  /**
+   * Constructs a new AResultFragment, assigning it the corresponding style.
+   */
   public AResultFragment() {
     setStyleName("aResultFragment");
-    DOM.setStyleAttribute(getElement(), "width", "100%");
   }
   
+  /**
+   * Convenience constructor for creating a new fragment which contains a label with the specified String.
+   * 
+   * @param text the text to be used in the label
+   */
   public AResultFragment(String text) {
     this();
     addLabel(text);
   }
   
-  /** Convenience method for adding Labels as new layers to the AResultFragment */
+  /** 
+   * Convenience method for adding Labels as new layers to the AResultFragment.
+   * 
+   * @param s the string to be used in the label
+   */
   public void addLabel(String s) {
     Label label = new Label(s);
     label.setStyleName("aResultFragment");

@@ -75,7 +75,12 @@ public class Publication extends AResultFragment {
   }
   
   public String endNoteCitation() {
-    return "";
+    return "%J " + getTitle() + "\n";
+/*      + "%D " + getDate() + "\n"
+      + "%V " + getVolume() + "\n"
+      + "%P " + getPages() + "\n";
+      + "%0 " +  also get the publication type + "\n"
+      */ // and make all these objects
   }
   
   public String toString() {
