@@ -22,10 +22,9 @@ import com.google.gwt.user.client.Window;
 import com.flatown.client.eutils.EntrezEngine;
 
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
-import com.google.gwt.user.client.ui.MouseListener;
 import com.google.gwt.user.client.ui.ClickListener;
 
 import com.google.gwt.json.client.JSONValue;
@@ -33,10 +32,14 @@ import com.google.gwt.json.client.JSONArray;
 import com.google.gwt.json.client.JSONString;
 
 
-// give this a specialized resultsbox
-public class BookmarksPanel extends FocusPanel implements ClickListener {
+/**
+ * The Panel used to hold the saved {@link AResult results}.
+ */
+public class BookmarksPanel extends ScrollPanel implements ClickListener {
   
+  /** A Singleton instance of the panel. */
   public static final BookmarksPanel Singleton = new BookmarksPanel();
+  /** The maximum number of results that can be contained in the panel */
   public static final int MaxBookmarks = 20;
   
   private BookmarkResultsBox _bookmarks;
@@ -46,21 +49,28 @@ public class BookmarksPanel extends FocusPanel implements ClickListener {
   private BookmarksPanel() {
     _bookmarks = new BookmarkResultsBox();
     _savedIds = new String[MaxBookmarks];
-    _count = 1;
+    _count = 0;
     
-    FlowPanel displayPanel = new FlowPanel();
+    VerticalPanel displayPanel = new VerticalPanel();
     displayPanel.add(_bookmarks);
     setWidget(displayPanel);
 
+    DOM.setStyleAttribute(displayPanel.getElement(), "width", "100%");
     DOM.setStyleAttribute(getElement(), "width", "100%");
     DOM.setStyleAttribute(getElement(), "height", "100%");
     DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 50 + "px");
   }
   
+  /**
+   * Saves a String, which we assume to be a Pubmed ID, to the BookmarksPanel.
+   * 
+   * @param pmid the pubmed id of the result to be saved
+   * @return whether or not the id was saved
+   */
   public boolean saveId(String pmid) {
     // true only if the id gets added
     if (_count == MaxBookmarks) return false;
-    for (int i = 0; i < _count; i++) {
+    for (int i = 0; i < _count + 1; i++) {
       if (_savedIds[i] == null) _savedIds[i] = pmid;
       else if (_savedIds[i].equals(pmid)) return false;
     }
@@ -69,12 +79,17 @@ public class BookmarksPanel extends FocusPanel implements ClickListener {
     return true;
   }
   
+  /**
+   * Removes a String, which we assume to be a Pubmed ID, from the BookmarksPanel
+   * 
+   * @param pmid the pubmed id of the result to be removed
+   */
   public void removeId(String pmid) {
     for (int i = 0; i < _count; i++) {
       if (_savedIds[i].equals(pmid)) {
         // adjust the id stack
-        for (int j = 0; j < _count - i - 1; j++) {
-          _savedIds[i+j] = _savedIds[i+j+1];
+        for (int j = i; j < _count - 1; j++) {
+          _savedIds[j] = _savedIds[j+1];
         }
         _savedIds[_count] = null;
         _count--;
@@ -85,6 +100,11 @@ public class BookmarksPanel extends FocusPanel implements ClickListener {
     }
   }
   
+  /**
+   * Takes an array of bookmarks and loads them into memory, fetching and displaying the results from Pubmed.
+   * 
+   * @param bookmarks the bookmarks to be loaded
+   */
   public void loadBookmarks(JSONArray bookmarks) {
     _count = bookmarks.size();
     for (int i = 0; i < _count; i++) {
@@ -97,7 +117,9 @@ public class BookmarksPanel extends FocusPanel implements ClickListener {
     GBox.Prefs.saveBookmarks();
   }
   
-  /** Implement the ClickListener interface -- only listens for save links*/
+  /** 
+   * Implement the ClickListener interface -- only listens for save links.
+   */
   public void onClick(Widget sender) {
     if (sender instanceof Hyperlink) {
       Hyperlink link = (Hyperlink)sender;
@@ -111,16 +133,22 @@ public class BookmarksPanel extends FocusPanel implements ClickListener {
     }
   }
   
-  /** Returns this BookmarksPanel as a JSONArray */
+  /** 
+   * Returns this BookmarksPanel as a JSONArray.
+   * 
+   * @return the JSONValue representation of this BookmarksPanel.
+   */
   public JSONValue toJSON() {
     JSONArray json = new JSONArray();
-    for (int i = 0; i < _count - 1; i++) {
+    for (int i = 0; i < _count; i++) {
       json.set(i, new JSONString(_savedIds[i]));
     }
     return json;
   }
   
-  /** Get the BookmarkResultsBox for the Singleton */
+  /** 
+   * Get the BookmarkResultsBox so the EntrezEngine can push results to us.
+   */
   public BookmarkResultsBox getSink() {
     return _bookmarks;
   }
@@ -132,9 +160,8 @@ public class BookmarksPanel extends FocusPanel implements ClickListener {
     
     public void setResults(AResult[] results) {
       for (int i = 0; i < results.length; i++) {
-        add(results[i]);
+        addResult(results[i]);
         results[i].setSaveText("Remove Bookmark");
-        results[i].attachToPopupHost(this);
       }
     }
   }

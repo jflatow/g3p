@@ -31,6 +31,9 @@ import com.google.gwt.user.client.ui.MouseListenerAdapter;
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.json.client.JSONArray;
 
+/**
+ * The panel holding all of our favorite {@link SearchBox searchboxes}.
+ */
 public class FavoritesPanel extends ScrollPanel implements DragHost {
   
   public static final FavoritesPanel Singleton = new FavoritesPanel();

@@ -22,7 +22,8 @@ import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.Timer;
 
-/** Slider to make elements slowly change size
+/** 
+ * A Timer to make elements slowly change size.
  */
 public class SlideTimer extends Timer {
   

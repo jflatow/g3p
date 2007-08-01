@@ -25,4 +25,6 @@ public interface Preferences {
   public void saveBookmarks();
   
   public void updateLastLogin();
+  
+  public String instanceURL();
 }

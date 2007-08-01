@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?> 
 <Module>
- <ModulePrefs title="Google Gadget Gateway to Pubmed" height="375" scrolling="true" author="Jared Flatow" author_email="jflatow@gmail.com" author_affiliation="Robert H. Lurie Comprehensive Cancer Center of Northwestern University" screenshot="" thumbnail="" description="g3p">
+ <ModulePrefs title="Google Gadget Gateway to Pubmed" height="375" scrolling="true" author="Jared Flatow" author_email="jflatow@gmail.com" author_affiliation="Robert H. Lurie Comprehensive Cancer Center of Northwestern University" screenshot="http://g3pproject.googlepages.com/g3p_screenshot.png" thumbnail="http://g3pproject.googlepages.com/g3p_thumbnail.png" description="g3p">
    <Require feature="setprefs"/>
  </ModulePrefs>
  <UserPref name="favs" default_value="" datatype="hidden"/>

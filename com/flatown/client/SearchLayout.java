@@ -50,7 +50,6 @@ public class SearchLayout extends FlowPanel {
     this.add(createDragBar());
     this.add(_resultsbox);
     this.setStyleName("searchbox-LayoutPanel");
-    DOM.setStyleAttribute(getElement(), "overflowX", "hidden");
   }
   
   /** Creates the draggable part of the layout */
@@ -100,7 +99,7 @@ public class SearchLayout extends FlowPanel {
     
     FlowPanel fieldPanel = new FlowPanel();
     fieldPanel.add(_numResults);
-    DOM.setStyleAttribute(fieldPanel.getElement(), "cssFloat", "left");
+    fieldPanel.setStyleName("leftFloat");
     
     Label results = new Label("Results");
     
@@ -121,6 +120,7 @@ public class SearchLayout extends FlowPanel {
     for (int i = 1; i <= 10; i++) {
       _numResults.addItem("" + i);
     }
+    _numResults.setSelectedIndex(2);
   }
   
   /* Field Accessor Methods */

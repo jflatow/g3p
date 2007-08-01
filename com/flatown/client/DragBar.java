@@ -19,25 +19,16 @@ package com.flatown.client;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.MouseListener;
-import com.google.gwt.user.client.ui.FocusListener;
 
 import com.google.gwt.user.client.DOM;
 
-/** Interface for panels that want to have draggable elements */
+/** Interface for draggable elements */
 public class DragBar extends FocusPanel {
   
   private Widget _dragWidget;
   
   public DragBar() {
     _dragWidget = null;
-        
-    addFocusListener(new FocusListener() {
-      public void onFocus(Widget sender) {
-        //setFocus(false);
-      }
-      
-      public void onLostFocus(Widget sender) {}
-    });
   }
   
   public void setDragWidget(Widget dragWidget) {

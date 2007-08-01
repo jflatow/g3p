@@ -24,6 +24,10 @@ import com.google.gwt.xml.client.NodeList;
 import com.google.gwt.xml.client.Node;
 import com.google.gwt.xml.client.Element;
 
+/**
+ * An {@link EntrezUtility} that can produce an IdList or WebEnv & QueryKey should extend this
+ * class so it can flow into other EntrezUtilities.
+ */
 public abstract class YieldsEnvironment extends EntrezUtility {
     
   protected EntrezUtility _utilSink;

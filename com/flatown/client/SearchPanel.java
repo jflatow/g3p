@@ -19,14 +19,19 @@ package com.flatown.client;
 import com.google.gwt.user.client.DOM;
 import com.google.gwt.user.client.Window;
 
-import com.google.gwt.user.client.ui.FocusPanel;
+import com.google.gwt.user.client.ui.ScrollPanel;
+import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class SearchPanel extends FocusPanel {
+public class SearchPanel extends ScrollPanel {
   
   public static final SearchPanel Singleton = new SearchPanel();
   
   private SearchPanel() {
-    super(new SearchBox());
+    VerticalPanel displayPanel = new VerticalPanel();
+    displayPanel.add(new SearchBox());
+    setWidget(displayPanel);
+    DOM.setStyleAttribute(displayPanel.getElement(), "width", "100%");
+    DOM.setStyleAttribute(displayPanel.getElement(), "height", "100%");
     DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 40 + "px");
   }
 }

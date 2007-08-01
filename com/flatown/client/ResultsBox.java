@@ -45,6 +45,7 @@ public class ResultsBox extends FlowPanel implements SinksEntrezUtil, PopupHost 
     _displayLog = true;
     _log = new AResult();
     this.setStyleName("resultsbox");
+    DOM.setStyleAttribute(getElement(), "overflowX", "hidden");
     
     _PopupListener = new MouseListenerAdapter() {
       public void onMouseEnter(Widget sender) {
@@ -102,9 +103,13 @@ public class ResultsBox extends FlowPanel implements SinksEntrezUtil, PopupHost 
   public void setResults(AResult[] results) {
     clearResults();
     for (int i = 0; i < results.length; i++) {
-      add(results[i]);
-      results[i].attachToPopupHost(this);
+      addResult(results[i]);
     }
+  }
+  
+  public void addResult(AResult result) {
+    add(result);
+    result.attachToPopupHost(this);
   }
   
   /** Allows the ResultsBox to implement SinkEntrezUtil */
