@@ -107,6 +107,10 @@ public class PubmedArticle extends AResult implements ClickListener {
     return _pmid;
   }
   
+  public AResult copy() {
+    return new PubmedArticle(_article);
+  }
+  
   public void showHover() {
     DOM.setStyleAttribute(_title.getElement(), "fontStyle", "normal");
     DOM.setStyleAttribute(_title.getElement(), "fontWeight", "bold");
@@ -167,7 +171,7 @@ public class PubmedArticle extends AResult implements ClickListener {
     if (sender instanceof Hyperlink) {
       Hyperlink link = (Hyperlink)sender;
       if (link.getText().equals("Tag for Export")) {
-        PubmedArticle copy = new PubmedArticle(_article);
+        AResult copy = copy();
         copy.tagForExport();
       } else if (link.getText().equals("Untag for Export")) {
         untagForExport();

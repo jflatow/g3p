@@ -16,6 +16,8 @@
 
 package com.flatown.client;
 
+import com.flatown.client.eutils.EntrezEngine;
+
 import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.FocusPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
@@ -109,6 +111,7 @@ public class SearchLayout extends FlowPanel {
     bottomPanel.add(fieldPanel);
     bottomPanel.add(results);
     bottomPanel.add(_favLink);
+    bottomPanel.add(new HoverLink("View in PubMed", "viewPubmedSearchToken", _searchbox));
     bottomPanel.setStyleName("searchbox-Layer");
     return bottomPanel;
   }

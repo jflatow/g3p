@@ -72,8 +72,7 @@ public class LinkAndCodePanel extends SharedPanel {
         _codeArea.setText(GBox.Prefs.instanceURL());
         _codeArea.selectAll();
       }
-    });
-    _instanceURLLink.setStyleName("shareLink");
+    }, "shareLink");
   }
   
   private void createIFrameCodeLink() {
@@ -82,7 +81,6 @@ public class LinkAndCodePanel extends SharedPanel {
         _codeArea.setText("<iframe src='" + GBox.Prefs.instanceURL() + "' style='border:0;width:100%;height:100%;' scrolling='no' frameborder='no'></iframe>");
         _codeArea.selectAll();
       }
-    });
-    _iframeCodeLink.setStyleName("shareLink");
+    }, "shareLink");
   }
 }

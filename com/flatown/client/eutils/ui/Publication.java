@@ -26,9 +26,15 @@ import com.google.gwt.user.client.ui.Label;
 public class Publication extends AResultFragment {
  
   private Node _article;
+  private String _title, _volume, _issue, _pages, _date;
   
   public Publication(Node pubmedArticle) {
     _article = pubmedArticle;
+    _title = getTitle();
+    _volume = getVolume();
+    _issue = getIssue();
+    _pages = getPages();
+    _date = getDate();
     addLabel(toString()); 
   }
   
@@ -75,15 +81,15 @@ public class Publication extends AResultFragment {
   }
   
   public String endNoteCitation() {
-    return "%J " + getTitle() + "\n";
-/*      + "%D " + getDate() + "\n"
-      + "%V " + getVolume() + "\n"
-      + "%P " + getPages() + "\n";
-      + "%0 " +  also get the publication type + "\n"
-      */ // and make all these objects
+    return "%J " + getTitle() + "\n"
+      + (_date.equals("") ? "" : "%D " + _date + "\n")
+      + (_volume.equals("") ? "" : "%V " + _volume + "\n")
+      + (_pages.equals("") ? "" : "%P " + getPages() + "\n");
+/*      + "%0 " +  also get the publication type + "\n"
+      */ // and make all these objects?
   }
   
   public String toString() {
-    return getTitle() + getDate() + getVolume() + getIssue() + getPages();
+    return _title + _date + _volume + _issue + _pages;
   }
 }

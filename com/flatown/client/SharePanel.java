@@ -21,7 +21,6 @@ import com.google.gwt.user.client.Window;
 
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.FlowPanel;
-import com.google.gwt.user.client.ui.ClickListener;
 import com.google.gwt.user.client.ui.StackPanel;
 
 /**
@@ -31,7 +30,6 @@ public class SharePanel extends ScrollPanel {
   
   /** A Singleton instance of the panel. */
   public static final SharePanel Singleton = new SharePanel();
-  public static int Counter = 0;
   
   private StackPanel _controlPanel;
     
@@ -53,9 +51,8 @@ public class SharePanel extends ScrollPanel {
   }
   
   private String makeHeader(String text) {
-    String _id = "hdr" + Counter++;
     return "<div style='width:100%; border-top:1px solid #7AA5D6;'>"
-      + "<div style='margin:5px 10px 5px 10px; font-weight:bold;'>"
-      + text + "</div></div>";
+      + "<div style='margin:5px 10px 5px 10px; font-weight:bold;'><a href='#'>"
+      + text + "</a></div></div>";
   }
 }

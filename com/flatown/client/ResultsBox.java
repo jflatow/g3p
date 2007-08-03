@@ -38,7 +38,41 @@ public class ResultsBox extends FlowPanel implements SinksEntrezUtil, PopupHost 
   private AResult _log;
   
   private static AResult _hoverOwner, _downOwner, _clickOwner;
-  private static MouseListener _PopupListener;
+  
+  private static MouseListener _PopupListener = new MouseListenerAdapter() {
+    public void onMouseEnter(Widget sender) {
+      if (sender instanceof AResult) {
+        if (sender != _hoverOwner) {
+          hideHover();
+          _hoverOwner = (AResult)sender;
+          _hoverOwner.showHover();
+        }
+      }
+    }
+    
+    public void onMouseLeave(Widget sender) {
+      if (sender instanceof AResult) {
+        _hoverOwner = (AResult)sender;
+        _hoverOwner.hideHover();
+      }
+    }
+    
+    public void onMouseDown(Widget sender, int x, int y) {
+      if (sender instanceof AResult && !SlideTimer.BUSY) {
+        _downOwner = (AResult)sender;
+      }
+    }
+    
+    public void onMouseUp(Widget sender, int x, int y) {
+      if (sender instanceof AResult && !SlideTimer.BUSY) {
+        if (_clickOwner != sender) collapse();
+        if (_downOwner == sender) {
+          _clickOwner = _downOwner;
+          _clickOwner.expand();
+        }
+      }
+    }
+  };
   
   public ResultsBox(SearchBox searchbox) {
     _searchbox = searchbox;
@@ -46,41 +80,6 @@ public class ResultsBox extends FlowPanel implements SinksEntrezUtil, PopupHost 
     _log = new AResult();
     this.setStyleName("resultsbox");
     DOM.setStyleAttribute(getElement(), "overflowX", "hidden");
-    
-    _PopupListener = new MouseListenerAdapter() {
-      public void onMouseEnter(Widget sender) {
-        if (sender instanceof AResult) {
-          if (sender != _hoverOwner) {
-            hideHover();
-            _hoverOwner = (AResult)sender;
-            _hoverOwner.showHover();
-          }
-        }
-      }
-      
-      public void onMouseLeave(Widget sender) {
-        if (sender instanceof AResult) {
-          _hoverOwner = (AResult)sender;
-          _hoverOwner.hideHover();
-        }
-      }
-      
-      public void onMouseDown(Widget sender, int x, int y) {
-        if (sender instanceof AResult && !SlideTimer.BUSY) {
-            _downOwner = (AResult)sender;
-        }
-      }
-      
-      public void onMouseUp(Widget sender, int x, int y) {
-        if (sender instanceof AResult && !SlideTimer.BUSY) {
-          if (_clickOwner != sender) collapse();
-          if (_downOwner == sender) {
-            _clickOwner = _downOwner;
-            _clickOwner.expand();
-          }
-        }
-      }
-    };
   }
    
   public SearchBox getSearchBox() {
@@ -104,6 +103,16 @@ public class ResultsBox extends FlowPanel implements SinksEntrezUtil, PopupHost 
     clearResults();
     for (int i = 0; i < results.length; i++) {
       addResult(results[i]);
+    }
+  }
+  
+  // shouldnt really have to check type first - we might want a runtime error if someone adds something other then an AResult
+  public void tagAllForExport() {
+    for (int i = 0; i < getWidgetCount(); i++) {
+      if (getWidget(i) instanceof AResult) {
+        AResult copy = ((AResult)getWidget(i)).copy();
+        copy.tagForExport();
+      }
     }
   }
   
