@@ -48,7 +48,7 @@ public class GBox extends TabPanel {
     
     Prefs = new GadgetPrefs();
     Prefs.updateLastLogin();
-    this.selectTab(Prefs.loadFavorites() ? 0 : 1);
+    this.selectTab(Prefs.loadFavorites() ? 0 : 4);
     Prefs.loadBookmarks();
     
     Window.addWindowResizeListener(new WindowResizeListener() {

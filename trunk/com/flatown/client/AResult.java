@@ -84,6 +84,13 @@ public class AResult extends DragBar implements PopupWidget, Portable {
   }
   
   /**
+   * Copies the result --- things like this are the reason this should be abstract (TODO)
+   */
+  public AResult copy() {
+    return new AResult();
+  }
+  
+  /**
    * Changes this result in a fitting way for onMouseEnter events. Default is to do nothing, but override this method
    * to modify this result if you want it to have a mouseover.
    */

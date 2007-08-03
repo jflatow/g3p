@@ -102,7 +102,7 @@ public class GadgetPrefs implements Preferences {
   }-*/;
     
   private static native String getPref(String name) /*-{
-   return $wnd.parent.prefs.getString(name);
+   return unescape($wnd.parent.prefs.getString(name));
   }-*/;
     
   private static native void setPref(String name, String value) /*-{

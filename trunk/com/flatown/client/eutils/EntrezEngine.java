@@ -29,7 +29,7 @@ public class EntrezEngine {
   
   public static final EntrezEngine Singleton = new EntrezEngine();
   public static final String PubmedURL = "http://www.ncbi.nlm.nih.gov/sites/entrez?cmd=Retrieve&db=PubMed&dopt=Citation&list_uids=";
-  
+  public static final String PubmedSearchURL = "http://www.ncbi.nlm.nih.gov/sites/entrez?Db=pubmed&Cmd=DetailsSearch&Term=";
   private static final String BaseURL = "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/";
  
   private static XmlRequestor _requestor;

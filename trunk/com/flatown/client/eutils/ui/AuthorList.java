@@ -77,6 +77,7 @@ public class AuthorList extends AResultFragment {
    * @return the object as part of an EndNote citation String
    */
   public String endNoteCitation() {
+    if (_authors == null) return "";
     String s = "";
     for (int i = 0; i < _authors.length; i++) {
       s += "%A " + _authors[i] + "\n";

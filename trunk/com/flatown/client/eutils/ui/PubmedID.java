@@ -23,26 +23,20 @@ import com.flatown.client.eutils.EntrezEngine;
 
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Widget;
-import com.google.gwt.user.client.ui.ClickListener;
 
 import com.google.gwt.xml.client.Node;
 // now that we can pass data with the hoverlink we can move the clicklistener into the host: resultsbox?
 // might be slightly better memory usage but this is much clearer, and the listener is pretty lightweight
-public class PubmedID extends AResultFragment implements ClickListener {
+public class PubmedID extends AResultFragment {
   
   private String _pmid; 
    
   public PubmedID(Node article) {
     _pmid = EntrezUtility.getNodeText(EntrezUtility.getFirstNodeOfTag(article, "PMID")); 
-    add(new HoverLink("PMID: " + _pmid, "pmidToken", this, "aResultFragment"));
+    add(new HoverLink("PMID: " + _pmid, EntrezEngine.PubmedURL + _pmid, "aResultFragment"));
   }
   
   public String toString() {
     return _pmid;
-  }
-  
-  /** Implement the ClickListener interface */
-  public void onClick(Widget sender) {
-    Window.open(EntrezEngine.PubmedURL + _pmid, "pubmed", "");
   }
 }

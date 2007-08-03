@@ -24,7 +24,9 @@ import com.google.gwt.user.client.ui.FormHandler;
 import com.google.gwt.user.client.ui.FormSubmitEvent;
 import com.google.gwt.user.client.ui.FormSubmitCompleteEvent;
 import com.google.gwt.user.client.ui.ClickListener;
+import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.DOM;
+import com.google.gwt.user.client.Window;
 
 import com.google.gwt.json.client.JSONValue;
 import com.google.gwt.json.client.JSONObject;
@@ -86,6 +88,12 @@ public class SearchBox extends FormPanel implements ClickListener {
     
     else if (sender == _layoutPanel.getSearchLink().getLink()) {
       this.submit();
+    }
+    // TODO: make the others like this
+    else if (sender instanceof Hyperlink) {
+      if (((Hyperlink)sender).getTargetHistoryToken().equals("viewPubmedSearchToken")) {
+        Window.open(EntrezEngine.PubmedSearchURL + EntrezEngine.escape(EntrezEngine.replaceSpaces(getSearchQuery())), "", "");
+      }
     }
   }
 

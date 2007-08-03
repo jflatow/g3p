@@ -23,6 +23,7 @@ import com.flatown.client.eutils.EntrezEngine;
 
 import com.google.gwt.user.client.ui.Widget;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.FlowPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.Hyperlink;
 import com.google.gwt.user.client.ui.ClickListener;
@@ -52,13 +53,23 @@ public class BookmarksPanel extends ScrollPanel implements ClickListener {
     _count = 0;
     
     VerticalPanel displayPanel = new VerticalPanel();
+    displayPanel.add(createControls());
     displayPanel.add(_bookmarks);
     setWidget(displayPanel);
 
     DOM.setStyleAttribute(displayPanel.getElement(), "width", "100%");
     DOM.setStyleAttribute(getElement(), "width", "100%");
     DOM.setStyleAttribute(getElement(), "height", "100%");
+    DOM.setStyleAttribute(getElement(), "backgroundColor", "#E5ECF9");
     DOM.setStyleAttribute(getElement(), "maxHeight", Window.getClientHeight() - 50 + "px");
+  }
+  
+  public FlowPanel createControls() {
+    FlowPanel controlPanel = new FlowPanel();
+    controlPanel.add(new HoverLink("Clear All", "clearBookmarksToken", this, "shareLink"));
+    controlPanel.add(new HoverLink("Tag All for Export", "exportAllToken", this, "shareLink"));
+    DOM.setStyleAttribute(controlPanel.getElement(), "margin", "0px 0px 5px 20px");
+    return controlPanel;
   }
   
   /**
@@ -100,6 +111,15 @@ public class BookmarksPanel extends ScrollPanel implements ClickListener {
     }
   }
   
+  public void removeAll() {
+    for (int i = _count - 1; i >= 0; i--) {
+      _savedIds[i] = null;
+      _bookmarks.remove(i);
+    }
+    _count = 0;
+    saveBookmarks();
+  }
+  
   /**
    * Takes an array of bookmarks and loads them into memory, fetching and displaying the results from Pubmed.
    * 
@@ -129,6 +149,10 @@ public class BookmarksPanel extends ScrollPanel implements ClickListener {
       }
       else if (link.getText().equals("Remove Bookmark")) {
         removeId(link.getTargetHistoryToken());
+      } else if (link.getTargetHistoryToken().equals("clearBookmarksToken")) {
+        removeAll();
+      } else if (link.getTargetHistoryToken().equals("exportAllToken")) {
+        _bookmarks.tagAllForExport();
       }
     }
   }
